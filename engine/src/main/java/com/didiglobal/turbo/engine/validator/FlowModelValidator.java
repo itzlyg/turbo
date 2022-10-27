@@ -9,15 +9,14 @@ import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.FlowModel;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.google.common.collect.Maps;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.text.MessageFormat;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class FlowModelValidator {

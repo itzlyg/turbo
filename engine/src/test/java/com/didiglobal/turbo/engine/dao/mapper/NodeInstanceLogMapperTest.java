@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.didiglobal.turbo.engine.entity.NodeInstanceLogPO;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
-import org.junit.Assert;
-import org.junit.Test;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.annotation.Resource;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class NodeInstanceLogMapperTest extends BaseTest {
 

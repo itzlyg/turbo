@@ -4,12 +4,11 @@ import com.didiglobal.turbo.engine.exception.DefinitionException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
-import org.junit.Assert;
-import org.junit.Test;
-
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Resource;
+import org.junit.Assert;
+import org.junit.Test;
 
 
 public class ExclusiveGatewayValidatorTest extends BaseTest {

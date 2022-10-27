@@ -6,12 +6,11 @@ import com.didiglobal.turbo.engine.common.FlowElementType;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
+import java.text.MessageFormat;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.text.MessageFormat;
 
 @Component
 public class ElementValidatorFactory {

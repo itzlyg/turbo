@@ -1,10 +1,15 @@
 package com.didiglobal.turbo.demo.util;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.turbo.engine.common.FlowElementType;
-import com.didiglobal.turbo.engine.model.*;
+import com.didiglobal.turbo.engine.model.EndEvent;
+import com.didiglobal.turbo.engine.model.ExclusiveGateway;
+import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.FlowModel;
+import com.didiglobal.turbo.engine.model.SequenceFlow;
+import com.didiglobal.turbo.engine.model.StartEvent;
+import com.didiglobal.turbo.engine.model.UserTask;
+import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.google.common.collect.Lists;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +32,7 @@ public class EntityBuilder {
      *                                               >=3
      */
     public static String buildLeaveFlowModelStr() {
-        return JSON.toJSONString(buildLeaveFlowModelEntity());
+        return JsonUtil.toJson(buildLeaveFlowModelEntity());
     }
     /**
      * 这里的数据一般都是，展示页面（前端）提供的，这里后台构建。
@@ -41,7 +46,7 @@ public class EntityBuilder {
      *                                                           --->    用户节点（填写售后原因） --->
      */
     public static String buildAfterSaleFlowModelStr() {
-        return JSON.toJSONString(buildAfterSaleFlowModelEntity());
+        return JsonUtil.toJson(buildAfterSaleFlowModelEntity());
     }
 
     private static Object buildAfterSaleFlowModelEntity() {

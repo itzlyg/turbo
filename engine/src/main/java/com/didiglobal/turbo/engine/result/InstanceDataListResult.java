@@ -3,7 +3,6 @@ package com.didiglobal.turbo.engine.result;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.model.InstanceData;
 import com.google.common.base.MoreObjects;
-
 import java.util.List;
 
 public class InstanceDataListResult extends CommonResult {

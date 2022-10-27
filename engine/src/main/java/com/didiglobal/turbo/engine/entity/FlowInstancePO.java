@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.util.Date;
 
 @TableName("ei_flow_instance")

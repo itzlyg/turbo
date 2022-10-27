@@ -4,11 +4,10 @@ import com.didiglobal.turbo.engine.common.FlowInstanceStatus;
 import com.didiglobal.turbo.engine.entity.FlowInstancePO;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.annotation.Resource;
 
 public class ProcessInstanceDAOTest extends BaseTest {
 

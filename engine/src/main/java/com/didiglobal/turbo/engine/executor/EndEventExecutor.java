@@ -8,9 +8,8 @@ import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
-import org.springframework.stereotype.Service;
-
 import java.text.MessageFormat;
+import org.springframework.stereotype.Service;
 
 @Service
 public class EndEventExecutor extends ElementExecutor {

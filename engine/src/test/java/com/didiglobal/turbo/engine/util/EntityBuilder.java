@@ -1,37 +1,64 @@
 package com.didiglobal.turbo.engine.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
-import com.didiglobal.turbo.engine.common.*;
-import com.didiglobal.turbo.engine.entity.*;
-import com.didiglobal.turbo.engine.model.*;
-import com.didiglobal.turbo.engine.param.*;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import java.util.*;
+import com.didiglobal.turbo.engine.common.Constants;
+import com.didiglobal.turbo.engine.common.FlowDefinitionStatus;
+import com.didiglobal.turbo.engine.common.FlowDeploymentStatus;
+import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowInstanceStatus;
+import com.didiglobal.turbo.engine.common.InstanceDataType;
+import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
+import com.didiglobal.turbo.engine.common.NodeInstanceType;
+import com.didiglobal.turbo.engine.common.ProcessStatus;
+import com.didiglobal.turbo.engine.common.RuntimeContext;
+import com.didiglobal.turbo.engine.entity.FlowDefinitionPO;
+import com.didiglobal.turbo.engine.entity.FlowDeploymentPO;
+import com.didiglobal.turbo.engine.entity.FlowInstancePO;
+import com.didiglobal.turbo.engine.entity.InstanceDataPO;
+import com.didiglobal.turbo.engine.entity.NodeInstanceLogPO;
+import com.didiglobal.turbo.engine.entity.NodeInstancePO;
+import com.didiglobal.turbo.engine.model.EndEvent;
+import com.didiglobal.turbo.engine.model.ExclusiveGateway;
+import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.FlowModel;
+import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.SequenceFlow;
+import com.didiglobal.turbo.engine.model.StartEvent;
+import com.didiglobal.turbo.engine.model.UserTask;
+import com.didiglobal.turbo.engine.param.CommitTaskParam;
+import com.didiglobal.turbo.engine.param.CreateFlowParam;
+import com.didiglobal.turbo.engine.param.DeployFlowParam;
+import com.didiglobal.turbo.engine.param.RollbackTaskParam;
+import com.didiglobal.turbo.engine.param.StartProcessParam;
+import com.didiglobal.turbo.engine.param.UpdateFlowParam;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class EntityBuilder {
-    private static long suffix = System.currentTimeMillis();
-    private static String flowName = "testFlowName_" + suffix;
-    private static String flowKey = "testFlowKey_" + suffix;
-    private static String flowModuleId = "testFlowModuleId_" + suffix;
-    private static String flowDeployId = "testFlowDeployId_" + suffix;
-    private static String flowInstanceId = "testFlowInstanceId_" + suffix;
-    private static String nodeInstanceId = "testNodeInstanceId_" + suffix;
-    private static String instanceDataId = "testInstanceDataId_" + suffix;
-    private static String sourceNodeInstanceId = "testSourceNodeInstanceId_" + suffix;
-    private static String nodeKey = "testNodeKey";
+    private static final long suffix = System.currentTimeMillis();
+    private static final String flowName = "testFlowName_" + suffix;
+    private static final String flowKey = "testFlowKey_" + suffix;
+    private static final String flowModuleId = "testFlowModuleId_" + suffix;
+    private static final String flowDeployId = "testFlowDeployId_" + suffix;
+    private static final String flowInstanceId = "testFlowInstanceId_" + suffix;
+    private static final String nodeInstanceId = "testNodeInstanceId_" + suffix;
+    private static final String instanceDataId = "testInstanceDataId_" + suffix;
+    private static final String sourceNodeInstanceId = "testSourceNodeInstanceId_" + suffix;
+    private static final String nodeKey = "testNodeKey";
     private static String sourceNodeKey = "testSourceNodeKey";
-    private static String operator = "testOperator";
-    private static String remark = "testRemark";
+    private static final String operator = "testOperator";
+    private static final String remark = "testRemark";
 
     public static FlowDefinitionPO buildFlowDefinitionPO() {
         FlowDefinitionPO flowDefinitionPO = new FlowDefinitionPO();
         flowDefinitionPO.setFlowKey(flowKey);
         flowDefinitionPO.setFlowModuleId(flowModuleId);
-        flowDefinitionPO.setFlowModel(JSON.toJSONString(buildFlowElementList()));
+        flowDefinitionPO.setFlowModel(JsonUtil.toJson(buildFlowElementList()));
         flowDefinitionPO.setStatus(FlowDefinitionStatus.INIT);
         flowDefinitionPO.setCreateTime(new Date());
         flowDefinitionPO.setModifyTime(new Date());
@@ -46,7 +73,7 @@ public class EntityBuilder {
         flowDeploymentPO.setFlowKey(flowKey);
         flowDeploymentPO.setFlowModuleId(flowModuleId);
         flowDeploymentPO.setFlowDeployId(flowDeployId);
-        flowDeploymentPO.setFlowModel(JSON.toJSONString(buildFlowElementList()));
+        flowDeploymentPO.setFlowModel(JsonUtil.toJson(buildFlowElementList()));
         flowDeploymentPO.setStatus(FlowDeploymentStatus.DEPLOYED);
         flowDeploymentPO.setCreateTime(new Date());
         flowDeploymentPO.setModifyTime(new Date());
@@ -56,7 +83,7 @@ public class EntityBuilder {
     }
 
     public static List<FlowElement> buildFlowElementList() {
-        List<FlowElement> flowElementList = Lists.newArrayList();
+        List<FlowElement> flowElementList = new ArrayList<>();
 
         //startEvent1
         StartEvent startEvent = new StartEvent();
@@ -114,7 +141,7 @@ public class EntityBuilder {
         exclusiveGateway.setKey("exclusiveGateway1");
         exclusiveGateway.setType(FlowElementType.EXCLUSIVE_GATEWAY);
 
-        Map<String, Object> properties = Maps.newHashMap();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(Constants.ELEMENT_PROPERTIES.HOOK_INFO_IDS, "[1,2]");
         exclusiveGateway.setProperties(properties);
 
@@ -133,7 +160,7 @@ public class EntityBuilder {
         SequenceFlow sequenceFlow3 = new SequenceFlow();
         sequenceFlow3.setKey("sequenceFlow3");
         sequenceFlow3.setType(FlowElementType.SEQUENCE_FLOW);
-        Map<String, Object> sFproperties3 = Maps.newHashMap();
+        Map<String, Object> sFproperties3 = new HashMap<>();
         sFproperties3.put(Constants.ELEMENT_PROPERTIES.CONDITION, "a>1&&b==1");
         sequenceFlow3.setProperties(sFproperties3);
 
@@ -152,7 +179,7 @@ public class EntityBuilder {
         sequenceFlow4.setKey("sequenceFlow4");
         sequenceFlow4.setType(FlowElementType.SEQUENCE_FLOW);
 
-        Map<String, Object> sFproperties4 = Maps.newHashMap();
+        Map<String, Object> sFproperties4 = new HashMap<>();
         sFproperties4.put(Constants.ELEMENT_PROPERTIES.DEFAULT_CONDITION, "true");
         sequenceFlow4.setProperties(sFproperties4);
 
@@ -451,7 +478,7 @@ public class EntityBuilder {
         instanceDataPO.setInstanceDataId(instanceDataId);
         instanceDataPO.setNodeKey(nodeKey);
         List<InstanceData> instanceDataList = buildInstanceDataList();
-        instanceDataPO.setInstanceData(JSON.toJSONString(instanceDataList));
+        instanceDataPO.setInstanceData(JsonUtil.toJson(instanceDataList));
         instanceDataPO.setType(InstanceDataType.EXECUTE);
         instanceDataPO.setCreateTime(new Date());
         instanceDataPO.setCaller("caller");
@@ -494,7 +521,7 @@ public class EntityBuilder {
         InstanceData instanceData1 = new InstanceData("key1", "value1");
         InstanceData instanceData2 = new InstanceData("key2", "value2");
         InstanceData instanceData3 = new InstanceData("key3", "value3");
-        List<InstanceData> instanceDataList = Lists.newArrayList();
+        List<InstanceData> instanceDataList = new ArrayList<>();
         instanceDataList.add(instanceData1);
         instanceDataList.add(instanceData2);
         instanceDataList.add(instanceData3);
@@ -503,7 +530,7 @@ public class EntityBuilder {
 
     public static String buildModelStringAccess() {
         FlowModel flowModel = new FlowModel();
-        List<FlowElement> flowElementList = Lists.newArrayList();
+        List<FlowElement> flowElementList = new ArrayList<>();
         //startEvent1
         StartEvent startEvent = new StartEvent();
         startEvent.setKey("startEvent1");
@@ -560,7 +587,7 @@ public class EntityBuilder {
         exclusiveGateway.setKey("exclusiveGateway1");
         exclusiveGateway.setType(FlowElementType.EXCLUSIVE_GATEWAY);
 
-        Map<String, Object> properties = Maps.newHashMap();
+        Map<String, Object> properties = new HashMap<>();
         properties.put(Constants.ELEMENT_PROPERTIES.HOOK_INFO_IDS, "[1,2]");
         exclusiveGateway.setProperties(properties);
 
@@ -579,7 +606,7 @@ public class EntityBuilder {
         SequenceFlow sequenceFlow3 = new SequenceFlow();
         sequenceFlow3.setKey("sequenceFlow3");
         sequenceFlow3.setType(FlowElementType.SEQUENCE_FLOW);
-        Map<String, Object> sFproperties3 = Maps.newHashMap();
+        Map<String, Object> sFproperties3 = new HashMap<>();
         sFproperties3.put(Constants.ELEMENT_PROPERTIES.CONDITION, "a>1&&b==1");
         sequenceFlow3.setProperties(sFproperties3);
 
@@ -598,7 +625,7 @@ public class EntityBuilder {
         sequenceFlow4.setKey("sequenceFlow4");
         sequenceFlow4.setType(FlowElementType.SEQUENCE_FLOW);
 
-        Map<String, Object> sFproperties4 = Maps.newHashMap();
+        Map<String, Object> sFproperties4 = new HashMap<>();
         sFproperties4.put(Constants.ELEMENT_PROPERTIES.DEFAULT_CONDITION, "true");
         sequenceFlow4.setProperties(sFproperties4);
 
@@ -695,8 +722,7 @@ public class EntityBuilder {
 
         flowElementList.add(endEvent2);
         flowModel.setFlowElementList(flowElementList);
-        String flowModelStr = JSON.toJSONString(flowModel);
-        return flowModelStr;
+        return JsonUtil.toJson(flowModel);
     }
 
     public static String buildModelString() {
@@ -810,7 +836,7 @@ public class EntityBuilder {
         }
         flowElementList.add(sequenceFlow3);
         flowModel.setFlowElementList(flowElementList);
-        String flowModelStr = JSON.toJSONString(flowModel);
+        String flowModelStr = JsonUtil.toJson(flowModel);
         return flowModelStr;
     }
 
@@ -843,9 +869,9 @@ public class EntityBuilder {
 
         FlowModel flowModel = new FlowModel();
         flowModel.setFlowElementList(flowElementList);
-        runtimeContext.setFlowElementMap(FlowModelUtil.getFlowElementMap(JSONObject.toJSONString(flowModel)));
+        runtimeContext.setFlowElementMap(FlowModelUtil.getFlowElementMap(JsonUtil.toJson(flowModel)));
 
-        runtimeContext.setNodeInstanceList(Lists.newArrayList());
+        runtimeContext.setNodeInstanceList(new ArrayList<>());
         runtimeContext.setCurrentNodeInstance(new NodeInstanceBO());
         runtimeContext.setSuspendNodeInstance(new NodeInstanceBO());
         runtimeContext.setInstanceDataId("");
@@ -862,7 +888,7 @@ public class EntityBuilder {
         flowDeploymentPO.setFlowKey(flowKey);
         flowDeploymentPO.setFlowModuleId("flowModuleId");
         flowDeploymentPO.setFlowDeployId("flowDeployId");
-        flowDeploymentPO.setFlowModel(JSON.toJSONString(buildSpecialFlowModel()));
+        flowDeploymentPO.setFlowModel(JsonUtil.toJson(buildSpecialFlowModel()));
         flowDeploymentPO.setStatus(FlowDeploymentStatus.DEPLOYED);
         flowDeploymentPO.setCreateTime(new Date());
         flowDeploymentPO.setModifyTime(new Date());
@@ -872,7 +898,7 @@ public class EntityBuilder {
     }
 
     public static FlowModel buildSpecialFlowModel() {
-        List<FlowElement> flowElementList = Lists.newArrayList();
+        List<FlowElement> flowElementList = new ArrayList<>();
         {
             StartEvent startEvent = new StartEvent();
             startEvent.setKey("StartEvent_1r83q1z");

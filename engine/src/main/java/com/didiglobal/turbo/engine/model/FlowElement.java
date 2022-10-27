@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.model;
 
 import com.google.common.base.MoreObjects;
-
 import java.util.List;
 import java.util.Map;
 

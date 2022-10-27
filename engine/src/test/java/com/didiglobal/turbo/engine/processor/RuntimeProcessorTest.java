@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.processor;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.turbo.engine.bo.ElementInstance;
 import com.didiglobal.turbo.engine.bo.NodeInstance;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
@@ -10,16 +9,23 @@ import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.param.CommitTaskParam;
 import com.didiglobal.turbo.engine.param.RollbackTaskParam;
 import com.didiglobal.turbo.engine.param.StartProcessParam;
-import com.didiglobal.turbo.engine.result.*;
+import com.didiglobal.turbo.engine.result.CommitTaskResult;
+import com.didiglobal.turbo.engine.result.ElementInstanceListResult;
+import com.didiglobal.turbo.engine.result.InstanceDataListResult;
+import com.didiglobal.turbo.engine.result.NodeInstanceListResult;
+import com.didiglobal.turbo.engine.result.NodeInstanceResult;
+import com.didiglobal.turbo.engine.result.RollbackTaskResult;
+import com.didiglobal.turbo.engine.result.StartProcessResult;
+import com.didiglobal.turbo.engine.result.TerminateResult;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
+import com.didiglobal.turbo.engine.util.JsonUtil;
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RuntimeProcessorTest extends BaseTest {
 
@@ -440,8 +446,8 @@ public class RuntimeProcessorTest extends BaseTest {
 
         instanceDataList = runtimeProcessor.getInstanceData(flowInstanceId);
         LOGGER.info("testGetInstanceData 5.||instanceDataList={}", instanceDataList);
-        String initData = JSON.toJSONString(startProcessResult.getVariables());
-        String rollbackData = JSON.toJSONString(rollbackTaskResult1.getVariables());
+        String initData = JsonUtil.toJson(startProcessResult.getVariables());
+        String rollbackData = JsonUtil.toJson(rollbackTaskResult1.getVariables());
         Assert.assertTrue(StringUtils.equals(initData, rollbackData));
     }
 

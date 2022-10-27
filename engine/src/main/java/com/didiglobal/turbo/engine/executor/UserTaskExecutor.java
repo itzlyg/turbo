@@ -9,11 +9,10 @@ import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.exception.SuspendException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
 import java.text.MessageFormat;
 import java.util.Map;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserTaskExecutor extends ElementExecutor {

@@ -4,12 +4,11 @@ import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.entity.NodeInstancePO;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
-import org.junit.Assert;
-import org.junit.Test;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class NodeInstanceDAOTest extends BaseTest {
 

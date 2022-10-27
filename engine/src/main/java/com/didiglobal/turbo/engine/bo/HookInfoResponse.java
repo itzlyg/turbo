@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.bo;
 
 import com.google.common.base.MoreObjects;
-
 import java.util.Map;
 
 public class HookInfoResponse {

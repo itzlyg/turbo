@@ -12,12 +12,11 @@ import com.didiglobal.turbo.engine.result.FlowModuleResult;
 import com.didiglobal.turbo.engine.result.UpdateFlowResult;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
+import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Resource;
 
 
 public class DefinitionProcessorTest extends BaseTest {

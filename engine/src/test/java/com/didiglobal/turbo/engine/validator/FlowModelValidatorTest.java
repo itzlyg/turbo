@@ -9,12 +9,11 @@ import com.didiglobal.turbo.engine.model.SequenceFlow;
 import com.didiglobal.turbo.engine.model.StartEvent;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
-import org.junit.Assert;
-import org.junit.Test;
-
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class FlowModelValidatorTest extends BaseTest {
 

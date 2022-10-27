@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.executor;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.bo.HookInfoResponse;
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.common.Constants;
@@ -16,17 +14,16 @@ import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.HttpUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
-import com.google.common.collect.Lists;
+import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.google.common.collect.Maps;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class ExclusiveGatewayExecutor extends ElementExecutor {
@@ -92,8 +89,8 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         hookParamMap.put("flowInstanceId", flowInstanceId);
         hookParamMap.put("hookInfoParam", hookInfoParam);
 
-        String responseStr = HttpUtil.postJson(HOOK_URL_NAME, hookUrl, JSONObject.toJSONString(hookParamMap), timeout);
-        HookInfoResponse hookInfoResponse = JSONObject.parseObject(responseStr, HookInfoResponse.class);
+        String responseStr = HttpUtil.postJson(HOOK_URL_NAME, hookUrl, JsonUtil.toJson(hookParamMap), timeout);
+        HookInfoResponse hookInfoResponse = JsonUtil.toBean(responseStr, HookInfoResponse.class);
 
         if (hookInfoResponse == null || hookInfoResponse.getStatus() != 0) {
             LOGGER.warn("getHookInfoValueMap failed: hookInfoResponse is null." +
@@ -116,12 +113,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
 
         }
 
-        List<InstanceData> dataList = Lists.newArrayList();
-        JSONArray jsonArray = (JSONArray) data.get(PARAM_DATA_LIST);
-        for (int i = 0; i < jsonArray.size(); i++) {
-            InstanceData instanceData = jsonArray.getObject(i, InstanceData.class);
-            dataList.add(instanceData);
-        }
+        List<InstanceData> dataList = JsonUtil.toBeans(JsonUtil.toJson(data.get(PARAM_DATA_LIST)), InstanceData.class);
         return InstanceDataUtil.getInstanceDataMap(dataList);
     }
 

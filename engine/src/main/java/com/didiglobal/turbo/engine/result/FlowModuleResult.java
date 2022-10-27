@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.result;
 
 import com.google.common.base.MoreObjects;
-
 import java.util.Date;
 
 public class FlowModuleResult extends CommonResult {

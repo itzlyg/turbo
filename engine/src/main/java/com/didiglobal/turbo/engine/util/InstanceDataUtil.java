@@ -1,17 +1,14 @@
 package com.didiglobal.turbo.engine.util;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.common.DataType;
 import com.didiglobal.turbo.engine.model.InstanceData;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.List;
-import java.util.Map;
 
 public class InstanceDataUtil {
 
@@ -32,7 +29,7 @@ public class InstanceDataUtil {
         if (StringUtils.isBlank(instanceDataStr)) {
             return MapUtils.EMPTY_MAP;
         }
-        List<InstanceData> instanceDataList = JSON.parseArray(instanceDataStr, InstanceData.class);
+        List<InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataStr, InstanceData.class);
         return getInstanceDataMap(instanceDataList);
     }
 
@@ -49,9 +46,9 @@ public class InstanceDataUtil {
 
     public static String getInstanceDataListStr(Map<String, InstanceData> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
-            return JSONObject.toJSONString(CollectionUtils.EMPTY_COLLECTION);
+            return JsonUtil.toJson(CollectionUtils.EMPTY_COLLECTION);
         }
-        return JSONObject.toJSONString(instanceDataMap.values());
+        return JsonUtil.toJson(instanceDataMap.values());
     }
 
     public static Map<String, Object> parseInstanceDataMap(Map<String, InstanceData> instanceDataMap) {

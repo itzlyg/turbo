@@ -8,10 +8,9 @@ import com.didiglobal.turbo.engine.dao.NodeInstanceLogDAO;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.util.IdGenerator;
 import com.didiglobal.turbo.engine.util.StrongUuidGenerator;
+import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.Resource;
 
 public abstract class RuntimeExecutor {
 

@@ -1,9 +1,16 @@
 package com.didiglobal.turbo.engine.processor;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
-import com.didiglobal.turbo.engine.bo.*;
-import com.didiglobal.turbo.engine.common.*;
+import com.didiglobal.turbo.engine.bo.ElementInstance;
+import com.didiglobal.turbo.engine.bo.FlowInfo;
+import com.didiglobal.turbo.engine.bo.FlowInstanceBO;
+import com.didiglobal.turbo.engine.bo.NodeInstance;
+import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
+import com.didiglobal.turbo.engine.common.ErrorEnum;
+import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowInstanceStatus;
+import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
+import com.didiglobal.turbo.engine.common.ProcessStatus;
+import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.dao.FlowDeploymentDAO;
 import com.didiglobal.turbo.engine.dao.InstanceDataDAO;
 import com.didiglobal.turbo.engine.dao.NodeInstanceDAO;
@@ -21,12 +28,24 @@ import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.param.CommitTaskParam;
 import com.didiglobal.turbo.engine.param.RollbackTaskParam;
 import com.didiglobal.turbo.engine.param.StartProcessParam;
-import com.didiglobal.turbo.engine.result.*;
+import com.didiglobal.turbo.engine.result.CommitTaskResult;
+import com.didiglobal.turbo.engine.result.ElementInstanceListResult;
+import com.didiglobal.turbo.engine.result.InstanceDataListResult;
+import com.didiglobal.turbo.engine.result.NodeInstanceListResult;
+import com.didiglobal.turbo.engine.result.NodeInstanceResult;
+import com.didiglobal.turbo.engine.result.RollbackTaskResult;
+import com.didiglobal.turbo.engine.result.RuntimeResult;
+import com.didiglobal.turbo.engine.result.StartProcessResult;
+import com.didiglobal.turbo.engine.result.TerminateResult;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
+import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.didiglobal.turbo.engine.validator.ParamValidator;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,10 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class RuntimeProcessor {
@@ -462,9 +477,7 @@ public class RuntimeProcessor {
     public InstanceDataListResult getInstanceData(String flowInstanceId) {
         InstanceDataPO instanceDataPO = instanceDataDAO.selectRecentOne(flowInstanceId);
 
-        TypeReference<List<InstanceData>> typeReference = new TypeReference<List<InstanceData>>() {
-        };
-        List<InstanceData> instanceDataList = JSONObject.parseObject(instanceDataPO.getInstanceData(), typeReference);
+        List<InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataPO.getInstanceData(), InstanceData.class);
         if (CollectionUtils.isEmpty(instanceDataList)) {
             instanceDataList =  Lists.newArrayList();
         }

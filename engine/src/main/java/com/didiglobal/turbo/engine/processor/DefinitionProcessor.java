@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.processor;
 
-import com.alibaba.fastjson.JSON;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.common.FlowDefinitionStatus;
 import com.didiglobal.turbo.engine.common.FlowDeploymentStatus;
@@ -16,19 +15,23 @@ import com.didiglobal.turbo.engine.param.CreateFlowParam;
 import com.didiglobal.turbo.engine.param.DeployFlowParam;
 import com.didiglobal.turbo.engine.param.GetFlowModuleParam;
 import com.didiglobal.turbo.engine.param.UpdateFlowParam;
-import com.didiglobal.turbo.engine.result.*;
+import com.didiglobal.turbo.engine.result.CommonResult;
+import com.didiglobal.turbo.engine.result.CreateFlowResult;
+import com.didiglobal.turbo.engine.result.DeployFlowResult;
+import com.didiglobal.turbo.engine.result.FlowModuleResult;
+import com.didiglobal.turbo.engine.result.UpdateFlowResult;
 import com.didiglobal.turbo.engine.util.IdGenerator;
+import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.didiglobal.turbo.engine.util.StrongUuidGenerator;
 import com.didiglobal.turbo.engine.validator.ModelValidator;
 import com.didiglobal.turbo.engine.validator.ParamValidator;
+import java.util.Date;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import java.util.Date;
 
 @Component
 public class DefinitionProcessor {
@@ -164,7 +167,7 @@ public class DefinitionProcessor {
         BeanUtils.copyProperties(flowDefinitionPO, flowModuleResult);
         Integer status = FlowModuleEnum.getStatusByDefinitionStatus(flowDefinitionPO.getStatus());
         flowModuleResult.setStatus(status);
-        LOGGER.info("getFlowModuleByFlowModuleId||flowModuleId={}||FlowModuleResult={}", flowModuleId, JSON.toJSONString(flowModuleResult));
+        LOGGER.info("getFlowModuleByFlowModuleId||flowModuleId={}||FlowModuleResult={}", flowModuleId, JsonUtil.toJson(flowModuleResult));
         return flowModuleResult;
     }
 
@@ -178,7 +181,7 @@ public class DefinitionProcessor {
         BeanUtils.copyProperties(flowDeploymentPO, flowModuleResult);
         Integer status = FlowModuleEnum.getStatusByDeploymentStatus(flowDeploymentPO.getStatus());
         flowModuleResult.setStatus(status);
-        LOGGER.info("getFlowModuleByFlowDeployId||flowDeployId={}||response={}", flowDeployId, JSON.toJSONString(flowModuleResult));
+        LOGGER.info("getFlowModuleByFlowDeployId||flowDeployId={}||response={}", flowDeployId, JsonUtil.toJson(flowModuleResult));
         return flowModuleResult;
     }
 

@@ -3,10 +3,9 @@ package com.didiglobal.turbo.engine.dao;
 import com.didiglobal.turbo.engine.entity.InstanceDataPO;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
+import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Test;
-
-import javax.annotation.Resource;
 
 public class InstanceDataDAOTest extends BaseTest {
 

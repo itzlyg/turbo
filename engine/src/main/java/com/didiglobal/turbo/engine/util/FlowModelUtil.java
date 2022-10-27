@@ -1,19 +1,18 @@
 package com.didiglobal.turbo.engine.util;
 
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.common.Constants;
 import com.didiglobal.turbo.engine.common.FlowElementType;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.FlowModel;
-import com.google.common.collect.Maps;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Map;
 
 public class FlowModelUtil {
     protected static final Logger LOGGER = LoggerFactory.getLogger(FlowModelUtil.class);
@@ -31,7 +30,6 @@ public class FlowModelUtil {
         if (StringUtils.isBlank(flowModelStr)) {
             return MapUtils.EMPTY_MAP;
         }
-
         FlowModel flowModel = parseModelFromString(flowModelStr);
         if (flowModel == null) {
             return MapUtils.EMPTY_MAP;
@@ -43,7 +41,7 @@ public class FlowModelUtil {
         if (CollectionUtils.isEmpty(flowElementList)) {
             return MapUtils.EMPTY_MAP;
         }
-        Map<String, FlowElement> flowElementMap = Maps.newHashMap();
+        Map<String, FlowElement> flowElementMap = new HashMap<>();
         flowElementList.forEach(flowElement -> {
             flowElementMap.put(flowElement.getKey(), flowElement);
         });
@@ -99,7 +97,7 @@ public class FlowModelUtil {
      * @return flowModel
      */
     public static FlowModel parseModelFromString(String flowModelStr) {
-        return JSONObject.parseObject(flowModelStr, FlowModel.class);
+        return JsonUtil.toBean(flowModelStr, FlowModel.class);
     }
 
     public static String getConditionFromSequenceFlow(FlowElement flowElement) {
@@ -110,7 +108,7 @@ public class FlowModelUtil {
     public static boolean isDefaultCondition(FlowElement flowElement) {
         Map<String, Object> properties = flowElement.getProperties();
         String isDefaultStr = (String) properties.get(Constants.ELEMENT_PROPERTIES.DEFAULT_CONDITION);
-        return "true".equalsIgnoreCase(isDefaultStr);
+        return BooleanUtils.toBoolean(isDefaultStr);
     }
 
     public static String getHookInfos(FlowElement flowElement) {

@@ -5,13 +5,12 @@ import com.didiglobal.turbo.engine.exception.DefinitionException;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowModel;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
+import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 @Component
 public class ModelValidator {

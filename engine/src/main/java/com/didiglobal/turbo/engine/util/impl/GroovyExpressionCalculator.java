@@ -1,17 +1,15 @@
 package com.didiglobal.turbo.engine.util.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.util.ExpressionCalculator;
 import com.didiglobal.turbo.engine.util.GroovyUtil;
+import com.didiglobal.turbo.engine.util.JsonUtil;
+import java.text.MessageFormat;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.text.MessageFormat;
-import java.util.Map;
 
 @Service
 public class GroovyExpressionCalculator implements ExpressionCalculator {
@@ -30,7 +28,7 @@ public class GroovyExpressionCalculator implements ExpressionCalculator {
                 return (Boolean) result;
             } else {
                 LOGGER.warn("the result of expression is not boolean.||expression={}||result={}||dataMap={}",
-                        expression, result, JSON.toJSONString(dataMap));
+                        expression, result, JsonUtil.toJson(dataMap));
                 throw new ProcessException(ErrorEnum.GROOVY_CALCULATE_FAILED.getErrNo(), "expression is not instanceof bool.");
             }
         } catch (Exception e) {
@@ -38,7 +36,7 @@ public class GroovyExpressionCalculator implements ExpressionCalculator {
             String groovyExFormat = "{0}: expression={1}";
             throw new ProcessException(ErrorEnum.GROOVY_CALCULATE_FAILED, MessageFormat.format(groovyExFormat, e.getMessage(), expression));
         } finally {
-            LOGGER.info("calculate expression.||expression={}||dataMap={}||result={}", expression, JSONObject.toJSONString(dataMap), result);
+            LOGGER.info("calculate expression.||expression={}||dataMap={}||result={}", expression, JsonUtil.toJson(dataMap), result);
         }
     }
 }

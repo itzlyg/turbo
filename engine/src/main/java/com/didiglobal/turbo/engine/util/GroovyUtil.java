@@ -6,19 +6,18 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import groovy.lang.MissingPropertyException;
 import groovy.lang.Script;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.groovy.runtime.InvokerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 public class GroovyUtil {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(GroovyUtil.class);
 
-    private static final Map<String, Class> SCRIPT_CLASS_CACHE = new ConcurrentHashMap<String, Class>();
+    private static final Map<String, Class<?>> SCRIPT_CLASS_CACHE = new ConcurrentHashMap<>();
 
     private GroovyUtil() {
     }
@@ -43,7 +42,7 @@ public class GroovyUtil {
     private static Script createScript(String groovyExpression, Binding binding) {
         Script script;
         if (SCRIPT_CLASS_CACHE.containsKey(groovyExpression)) {
-            Class scriptClass = SCRIPT_CLASS_CACHE.get(groovyExpression);
+            Class<?> scriptClass = SCRIPT_CLASS_CACHE.get(groovyExpression);
             script = InvokerHelper.createScript(scriptClass, binding);
         } else {
             script = new GroovyShell(binding).parse(groovyExpression);

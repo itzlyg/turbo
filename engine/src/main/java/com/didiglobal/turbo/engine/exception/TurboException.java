@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.exception;
 
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-
 import java.text.MessageFormat;
 
 public class TurboException extends Exception {

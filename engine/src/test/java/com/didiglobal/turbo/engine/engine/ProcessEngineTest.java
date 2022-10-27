@@ -9,10 +9,9 @@ import com.didiglobal.turbo.engine.result.DeployFlowResult;
 import com.didiglobal.turbo.engine.result.UpdateFlowResult;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
+import javax.annotation.Resource;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
 
 public class ProcessEngineTest extends BaseTest {
 

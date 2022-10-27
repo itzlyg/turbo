@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.executor;
 
-import com.alibaba.fastjson.JSONObject;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.FlowModel;
@@ -8,14 +7,14 @@ import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.runner.BaseTest;
 import com.didiglobal.turbo.engine.util.EntityBuilder;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
+import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.google.common.collect.Maps;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Resource;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import javax.annotation.Resource;
-import java.util.List;
-import java.util.Map;
 
 public class ExclusiveGatewayExecutorTest extends BaseTest {
 
@@ -32,7 +31,7 @@ public class ExclusiveGatewayExecutorTest extends BaseTest {
 
         FlowModel flowModel = new FlowModel();
         flowModel.setFlowElementList(flowElementList);
-        Map<String, FlowElement> flowElementMap = FlowModelUtil.getFlowElementMap(JSONObject.toJSONString(flowModel));
+        Map<String, FlowElement> flowElementMap = FlowModelUtil.getFlowElementMap(JsonUtil.toJson(flowModel));
 
         FlowElement exclusiveGateway = FlowModelUtil.getFlowElement(flowElementMap, "exclusiveGateway1");
 
