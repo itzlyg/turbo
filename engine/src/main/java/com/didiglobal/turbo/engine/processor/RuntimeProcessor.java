@@ -5,7 +5,7 @@ import com.didiglobal.turbo.engine.bo.FlowInfoBO;
 import com.didiglobal.turbo.engine.bo.FlowInstanceBO;
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.common.FlowInstanceStatus;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.common.ProcessStatus;
@@ -378,7 +378,7 @@ public class RuntimeProcessor {
             throw new ProcessException(ErrorEnum.GET_NODE_FAILED);
         }
         FlowElement flowElement = flowElementMap.get(nodeKey);
-        return flowElement.getType() == FlowElementType.USER_TASK;
+        return flowElement.getType() == FlowElementTypeEnum.USER_TASK.getCode();
     }
 
     ////////////////////////////////////////getHistoryElementList////////////////////////////////////////

@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.executor;
 
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.engine.ExpressionCalculator;
@@ -268,7 +268,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         List<String> outgoingKeyList = currentFlowElement.getOutgoing();
         String nextElementKey = outgoingKeyList.get(0);
         FlowElement nextFlowElement = FlowModelUtil.getFlowElement(flowElementMap, nextElementKey);
-        while (nextFlowElement.getType() == FlowElementType.SEQUENCE_FLOW) {
+        while (nextFlowElement.getType() == FlowElementTypeEnum.SEQUENCE_FLOW.getCode()) {
             nextFlowElement = getUniqueNextNode(nextFlowElement, flowElementMap);
         }
         return nextFlowElement;
@@ -278,7 +278,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
                                             Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         FlowElement nextFlowElement = calculateOutgoing(currentFlowElement, flowElementMap, instanceDataMap);
 
-        while (nextFlowElement.getType() == FlowElementType.SEQUENCE_FLOW) {
+        while (nextFlowElement.getType() == FlowElementTypeEnum.SEQUENCE_FLOW.getCode()) {
             nextFlowElement = getUniqueNextNode(nextFlowElement, flowElementMap);
         }
         return nextFlowElement;

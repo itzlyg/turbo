@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.validator;
 
 import com.didiglobal.turbo.engine.common.Constants;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.exception.DefinitionException;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
@@ -55,11 +55,11 @@ public class FlowModelValidator {
             ElementValidator elementValidator = elementValidatorFactory.getElementValidator(flowElement);
             elementValidator.validate(flowElementMap, flowElement);
 
-            if (FlowElementType.START_EVENT == flowElement.getType()) {
+            if (FlowElementTypeEnum.START_EVENT.getCode() == flowElement.getType()) {
                 startEventCount++;
             }
 
-            if (FlowElementType.END_EVENT == flowElement.getType()) {
+            if (FlowElementTypeEnum.END_EVENT.getCode() == flowElement.getType()) {
                 endEventCount++;
             }
         }

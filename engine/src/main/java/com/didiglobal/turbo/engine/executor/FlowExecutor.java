@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.executor;
 
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.common.FlowInstanceStatus;
 import com.didiglobal.turbo.engine.common.InstanceDataType;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
@@ -405,7 +405,7 @@ public class FlowExecutor extends RuntimeExecutor {
         for (NodeInstance nodeInstancePO : nodeInstancePOList) {
             // TODO: 2020/1/10 the first active or completed node must be UserTask
             //ignore userTask
-            if (!FlowModelUtil.isElementType(nodeInstancePO.getNodeKey(), flowElementMap, FlowElementType.USER_TASK)) {
+            if (!FlowModelUtil.isElementType(nodeInstancePO.getNodeKey(), flowElementMap, FlowElementTypeEnum.USER_TASK.getCode())) {
                 LOGGER.info("getActiveUserTaskForRollback: ignore un-userTask nodeInstance.||flowInstanceId={}"
                         + "||suspendNodeInstanceId={}||nodeKey={}", flowInstanceId, suspendNodeInstanceId, nodeInstancePO.getNodeKey());
                 continue;
@@ -519,7 +519,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         String nodeKey = suspendNodeInstance.getNodeKey();
         Map<String, FlowElement> flowElementMap = runtimeContext.getFlowElementMap();
-        if (FlowModelUtil.getFlowElement(flowElementMap, nodeKey).getType() == FlowElementType.END_EVENT) {
+        if (FlowModelUtil.getFlowElement(flowElementMap, nodeKey).getType() == FlowElementTypeEnum.END_EVENT.getCode()) {
             return true;
         }
         return false;

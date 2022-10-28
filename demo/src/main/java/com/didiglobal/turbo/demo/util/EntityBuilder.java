@@ -1,6 +1,6 @@
 package com.didiglobal.turbo.demo.util;
 
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.model.EndEvent;
 import com.didiglobal.turbo.engine.model.ExclusiveGateway;
 import com.didiglobal.turbo.engine.model.FlowElement;
@@ -53,7 +53,7 @@ public class EntityBuilder {
         //开始节点
         StartEvent startNode = new StartEvent();
         startNode.setKey("StartEvent_0ofi5hg");
-        startNode.setType(FlowElementType.START_EVENT);
+        startNode.setType(FlowElementTypeEnum.START_EVENT.getCode());
         List<String> outgoings = new ArrayList<>();
         outgoings.add("SequenceFlow_1udf5vg");
         startNode.setOutgoing(outgoings);
@@ -62,7 +62,7 @@ public class EntityBuilder {
         //用户节点（输入订单相关信息)
         UserTask orderInfo = new UserTask();
         orderInfo.setKey("UserTask_1625vn7");
-        orderInfo.setType(FlowElementType.USER_TASK);
+        orderInfo.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings = new ArrayList<>();
         utIncomings.add("SequenceFlow_1udf5vg");
         orderInfo.setIncoming(utIncomings);
@@ -74,7 +74,7 @@ public class EntityBuilder {
         //排他节点(判断订单状态)
         ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.setKey("ExclusiveGateway_1l0d11b");
-        exclusiveGateway.setType(FlowElementType.EXCLUSIVE_GATEWAY);
+        exclusiveGateway.setType(FlowElementTypeEnum.EXCLUSIVE_GATEWAY.getCode());
         List<String> egIncomings = new ArrayList<>();
         egIncomings.add("SequenceFlow_06uq82c");
         exclusiveGateway.setIncoming(egIncomings);
@@ -91,7 +91,7 @@ public class EntityBuilder {
         //未收到货触发的用户节点
         UserTask unreleaseTriggerUserNode = new UserTask();
         unreleaseTriggerUserNode.setKey("UserTask_0j0wc1o");
-        unreleaseTriggerUserNode.setType(FlowElementType.USER_TASK);
+        unreleaseTriggerUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings2 = new ArrayList<>();
         utIncomings2.add("SequenceFlow_15vyyaj");
         unreleaseTriggerUserNode.setIncoming(utIncomings2);
@@ -103,7 +103,7 @@ public class EntityBuilder {
         //已发货触发的用户节点
         UserTask releaseOrderTriggerUserNode = new UserTask();
         releaseOrderTriggerUserNode.setKey("UserTask_05t37q8");
-        releaseOrderTriggerUserNode.setType(FlowElementType.USER_TASK);
+        releaseOrderTriggerUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings3 = new ArrayList<>();
         utIncomings3.add("SequenceFlow_168uou3");
         releaseOrderTriggerUserNode.setIncoming(utIncomings3);
@@ -115,7 +115,7 @@ public class EntityBuilder {
         //已收到货触发的用户节点
         UserTask receivedOrderTriggerUserNode = new UserTask();
         receivedOrderTriggerUserNode.setKey("UserTask_05p38q9");
-        receivedOrderTriggerUserNode.setType(FlowElementType.USER_TASK);
+        receivedOrderTriggerUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings4 = new ArrayList<>();
         utIncomings4.add("SequenceFlow_168uou4");
         receivedOrderTriggerUserNode.setIncoming(utIncomings4);
@@ -127,7 +127,7 @@ public class EntityBuilder {
         //结束节点
         EndEvent endEvent = new EndEvent();
         endEvent.setKey("EndEvent_1m02l29");
-        endEvent.setType(FlowElementType.END_EVENT);
+        endEvent.setType(FlowElementTypeEnum.END_EVENT.getCode());
         List<String> incomings = new ArrayList<>();
         incomings.add("SequenceFlow_18y740t");
         incomings.add("SequenceFlow_086u2jq");
@@ -140,7 +140,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow1 = new SequenceFlow();
         sequenceFlow1.setKey("SequenceFlow_1udf5vg");
-        sequenceFlow1.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow1.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings1 = new ArrayList<>();
         sfIncomings1.add("StartEvent_0ofi5hg");
         sequenceFlow1.setIncoming(sfIncomings1);
@@ -155,7 +155,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow2 = new SequenceFlow();
         sequenceFlow2.setKey("SequenceFlow_06uq82c");
-        sequenceFlow2.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow2.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings2 = new ArrayList<>();
         sfIncomings2.add("UserTask_1625vn7");
         sequenceFlow2.setIncoming(sfIncomings2);
@@ -170,7 +170,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow3 = new SequenceFlow();
         sequenceFlow3.setKey("SequenceFlow_18y740t");
-        sequenceFlow3.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow3.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings3 = new ArrayList<>();
         sfIncomings3.add("UserTask_0j0wc1o");
         sequenceFlow3.setIncoming(sfIncomings3);
@@ -185,7 +185,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow4 = new SequenceFlow();
         sequenceFlow4.setKey("SequenceFlow_086u2jq");
-        sequenceFlow4.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow4.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings4 = new ArrayList<>();
         sfIncomings4.add("UserTask_05t37q8");
         sequenceFlow4.setIncoming(sfIncomings4);
@@ -200,7 +200,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow5 = new SequenceFlow();
         sequenceFlow5.setKey("SequenceFlow_086u3jq");
-        sequenceFlow5.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow5.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings5 = new ArrayList<>();
         sfIncomings5.add("UserTask_05p38q9");
         sequenceFlow5.setIncoming(sfIncomings5);
@@ -215,7 +215,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow6 = new SequenceFlow();
         sequenceFlow6.setKey("SequenceFlow_15vyyaj");
-        sequenceFlow6.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow6.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings6 = new ArrayList<>();
         sfIncomings6.add("ExclusiveGateway_1l0d11b");
         sequenceFlow6.setIncoming(sfIncomings6);
@@ -230,7 +230,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow7 = new SequenceFlow();
         sequenceFlow7.setKey("SequenceFlow_168uou3");
-        sequenceFlow7.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow7.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings7 = new ArrayList<>();
         sfIncomings7.add("ExclusiveGateway_1l0d11b");
         sequenceFlow7.setIncoming(sfIncomings7);
@@ -245,7 +245,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow8 = new SequenceFlow();
         sequenceFlow8.setKey("SequenceFlow_168uou4");
-        sequenceFlow8.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow8.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings8 = new ArrayList<>();
         sfIncomings8.add("ExclusiveGateway_1l0d11b");
         sequenceFlow8.setIncoming(sfIncomings8);
@@ -269,7 +269,7 @@ public class EntityBuilder {
         //开始节点
         StartEvent startEvent = new StartEvent();
         startEvent.setKey("StartEvent_0ofi5hg");
-        startEvent.setType(FlowElementType.START_EVENT);
+        startEvent.setType(FlowElementTypeEnum.START_EVENT.getCode());
         List<String> outgoings = new ArrayList<>();
         outgoings.add("SequenceFlow_1udf5vg");
         startEvent.setOutgoing(outgoings);
@@ -278,7 +278,7 @@ public class EntityBuilder {
         //用户节点（输入请假天数）
         UserTask inputTimeUserNode = new UserTask();
         inputTimeUserNode.setKey("UserTask_1625vn7");
-        inputTimeUserNode.setType(FlowElementType.USER_TASK);
+        inputTimeUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings = new ArrayList<>();
         utIncomings.add("SequenceFlow_1udf5vg");
         inputTimeUserNode.setIncoming(utIncomings);
@@ -290,7 +290,7 @@ public class EntityBuilder {
         //排他节点
         ExclusiveGateway exclusiveGateway = new ExclusiveGateway();
         exclusiveGateway.setKey("ExclusiveGateway_1l0d11b");
-        exclusiveGateway.setType(FlowElementType.EXCLUSIVE_GATEWAY);
+        exclusiveGateway.setType(FlowElementTypeEnum.EXCLUSIVE_GATEWAY.getCode());
         List<String> egIncomings = new ArrayList<>();
         egIncomings.add("SequenceFlow_06uq82c");
         exclusiveGateway.setIncoming(egIncomings);
@@ -306,7 +306,7 @@ public class EntityBuilder {
         //用户节点（直属领导审批）
         UserTask directLeaderUserNode = new UserTask();
         directLeaderUserNode.setKey("UserTask_0j0wc1o");
-        directLeaderUserNode.setType(FlowElementType.USER_TASK);
+        directLeaderUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings2 = new ArrayList<>();
         utIncomings2.add("SequenceFlow_15vyyaj");
         directLeaderUserNode.setIncoming(utIncomings2);
@@ -318,7 +318,7 @@ public class EntityBuilder {
         //用户节点（间接领导审批）
         UserTask indirectLeaderUserNode = new UserTask();
         indirectLeaderUserNode.setKey("UserTask_05t37q8");
-        indirectLeaderUserNode.setType(FlowElementType.USER_TASK);
+        indirectLeaderUserNode.setType(FlowElementTypeEnum.USER_TASK.getCode());
         List<String> utIncomings3 = new ArrayList<>();
         utIncomings3.add("SequenceFlow_168uou3");
         indirectLeaderUserNode.setIncoming(utIncomings3);
@@ -329,7 +329,7 @@ public class EntityBuilder {
 
         EndEvent endEvent = new EndEvent();
         endEvent.setKey("EndEvent_1m02l29");
-        endEvent.setType(FlowElementType.END_EVENT);
+        endEvent.setType(FlowElementTypeEnum.END_EVENT.getCode());
         List<String> incomings = new ArrayList<>();
         incomings.add("SequenceFlow_18y740t");
         incomings.add("SequenceFlow_086u2jq");
@@ -340,7 +340,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow1 = new SequenceFlow();
         sequenceFlow1.setKey("SequenceFlow_1udf5vg");
-        sequenceFlow1.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow1.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings1 = new ArrayList<>();
         sfIncomings1.add("StartEvent_0ofi5hg");
         sequenceFlow1.setIncoming(sfIncomings1);
@@ -355,7 +355,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow2 = new SequenceFlow();
         sequenceFlow2.setKey("SequenceFlow_06uq82c");
-        sequenceFlow2.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow2.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings2 = new ArrayList<>();
         sfIncomings2.add("UserTask_1625vn7");
         sequenceFlow2.setIncoming(sfIncomings2);
@@ -370,7 +370,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow3 = new SequenceFlow();
         sequenceFlow3.setKey("SequenceFlow_18y740t");
-        sequenceFlow3.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow3.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings3 = new ArrayList<>();
         sfIncomings3.add("UserTask_0j0wc1o");
         sequenceFlow3.setIncoming(sfIncomings3);
@@ -385,7 +385,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow4 = new SequenceFlow();
         sequenceFlow4.setKey("SequenceFlow_086u2jq");
-        sequenceFlow4.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow4.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings4 = new ArrayList<>();
         sfIncomings4.add("UserTask_05t37q8");
         sequenceFlow4.setIncoming(sfIncomings4);
@@ -400,7 +400,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow5 = new SequenceFlow();
         sequenceFlow5.setKey("SequenceFlow_15vyyaj");
-        sequenceFlow5.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow5.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings5 = new ArrayList<>();
         sfIncomings5.add("ExclusiveGateway_1l0d11b");
         sequenceFlow5.setIncoming(sfIncomings5);
@@ -415,7 +415,7 @@ public class EntityBuilder {
 
         SequenceFlow sequenceFlow6 = new SequenceFlow();
         sequenceFlow6.setKey("SequenceFlow_168uou3");
-        sequenceFlow6.setType(FlowElementType.SEQUENCE_FLOW);
+        sequenceFlow6.setType(FlowElementTypeEnum.SEQUENCE_FLOW.getCode());
         List<String> sfIncomings6 = new ArrayList<>();
         sfIncomings6.add("ExclusiveGateway_1l0d11b");
         sequenceFlow6.setIncoming(sfIncomings6);

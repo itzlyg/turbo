@@ -1,7 +1,7 @@
 package com.didiglobal.turbo.engine.util;
 
 import com.didiglobal.turbo.engine.common.Constants;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.FlowModel;
 import java.util.HashMap;
@@ -56,7 +56,7 @@ public class FlowModelUtil {
      */
     public static FlowElement getStartEvent(Map<String, FlowElement> flowModel) {
         for (FlowElement flowElement : flowModel.values()) {
-            if (FlowElementType.START_EVENT == flowElement.getType()) {
+            if (FlowElementTypeEnum.START_EVENT.getCode() == flowElement.getType()) {
                 return flowElement;
             }
         }

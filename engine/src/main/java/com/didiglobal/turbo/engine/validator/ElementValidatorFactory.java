@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.validator;
 
 import com.didiglobal.turbo.engine.common.Constants;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
@@ -46,16 +46,17 @@ public class ElementValidatorFactory {
     }
 
     private ElementValidator getElementValidator(int elementType) {
-        switch (elementType) {
-            case FlowElementType.START_EVENT:
+        FlowElementTypeEnum element = FlowElementTypeEnum.byCode(elementType);
+        switch (element) {
+            case START_EVENT:
                 return startEventValidator;
-            case FlowElementType.END_EVENT:
+            case END_EVENT:
                 return endEventValidator;
-            case FlowElementType.SEQUENCE_FLOW:
+            case SEQUENCE_FLOW:
                 return sequenceFlowValidator;
-            case FlowElementType.USER_TASK:
+            case USER_TASK:
                 return userTaskValidator;
-            case FlowElementType.EXCLUSIVE_GATEWAY:
+            case EXCLUSIVE_GATEWAY:
                 return exclusiveGatewayValidator;
             default:
                 return null;
