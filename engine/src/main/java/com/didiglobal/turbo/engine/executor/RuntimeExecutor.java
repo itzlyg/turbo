@@ -6,11 +6,11 @@ import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.config.SpringUtil;
-import com.didiglobal.turbo.engine.dao.InstanceDataDAO;
-import com.didiglobal.turbo.engine.dao.NodeInstanceDAO;
-import com.didiglobal.turbo.engine.dao.NodeInstanceLogDAO;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.service.InstanceDataService;
+import com.didiglobal.turbo.engine.service.NodeInstanceLogService;
+import com.didiglobal.turbo.engine.service.NodeInstanceService;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.SnowFlake;
 import java.text.MessageFormat;
@@ -24,13 +24,13 @@ public abstract class RuntimeExecutor {
     protected static final Logger LOGGER = LoggerFactory.getLogger(RuntimeExecutor.class);
 
     @Resource
-    protected InstanceDataDAO instanceDataDAO;
+    protected InstanceDataService instanceDataService;
 
     @Resource
-    protected NodeInstanceDAO nodeInstanceDAO;
+    protected NodeInstanceService nodeInstanceService;
 
     @Resource
-    protected NodeInstanceLogDAO nodeInstanceLogDAO;
+    protected NodeInstanceLogService nodeInstanceLogService;
 
     protected String genId() {
         return SnowFlake.genId();

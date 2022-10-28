@@ -5,14 +5,13 @@ import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.common.FlowElementType;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
-import com.didiglobal.turbo.engine.entity.InstanceDataPO;
-import com.didiglobal.turbo.engine.entity.NodeInstancePO;
+import com.didiglobal.turbo.engine.engine.ExpressionCalculator;
+import com.didiglobal.turbo.engine.entity.InstanceData;
+import com.didiglobal.turbo.engine.entity.NodeInstance;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.exception.ReentrantException;
 import com.didiglobal.turbo.engine.exception.SuspendException;
 import com.didiglobal.turbo.engine.model.FlowElement;
-import com.didiglobal.turbo.engine.model.InstanceData;
-import com.didiglobal.turbo.engine.util.ExpressionCalculator;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import java.util.List;
@@ -59,7 +58,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         NodeInstanceBO sourceNodeInstance = runtimeContext.getCurrentNodeInstance();
         if (sourceNodeInstance != null) {
             // TODO: 2019/12/30 cache
-            NodeInstancePO nodeInstancePO = nodeInstanceDAO.selectBySourceInstanceId(flowInstanceId,
+            NodeInstance nodeInstancePO = nodeInstanceService.selectBySourceInstanceId(flowInstanceId,
                     sourceNodeInstance.getNodeInstanceId(), nodeKey);
             //reentrant check
             if (nodeInstancePO != null) {
@@ -162,7 +161,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         } else {
             //case2
             nodeInstanceId = runtimeContext.getCurrentNodeInstance().getSourceNodeInstanceId();
-            NodeInstancePO currentNodeInstancePO = nodeInstanceDAO.selectByNodeInstanceId(flowInstanceId, nodeInstanceId);
+            NodeInstance currentNodeInstancePO = nodeInstanceService.nodeInstanceId(nodeInstanceId, flowInstanceId);
             if (currentNodeInstancePO == null) {
                 LOGGER.warn("preRollback failed: cannot find currentNodeInstancePO from db."
                         + "||flowInstanceId={}||nodeInstanceId={}", flowInstanceId, nodeInstanceId);
@@ -173,8 +172,8 @@ public abstract class ElementExecutor extends RuntimeExecutor {
 
             String currentInstanceDataId = currentNodeInstance.getInstanceDataId();
             runtimeContext.setInstanceDataId(currentInstanceDataId);
-            InstanceDataPO instanceDataPO = instanceDataDAO.select(flowInstanceId, currentInstanceDataId);
-            Map<String, InstanceData> currentInstanceDataMap = InstanceDataUtil.getInstanceDataMap(instanceDataPO.getInstanceData());
+            InstanceData instanceDataPO = instanceDataService.select(flowInstanceId, currentInstanceDataId);
+            Map<String, com.didiglobal.turbo.engine.model.InstanceData> currentInstanceDataMap = InstanceDataUtil.getInstanceDataMap(instanceDataPO.getInstanceData());
             runtimeContext.setInstanceDataMap(currentInstanceDataMap);
         }
         runtimeContext.setCurrentNodeInstance(currentNodeInstance);
@@ -228,7 +227,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         }
 
         // TODO: 2019/12/13 get from cache
-        NodeInstancePO sourceNodeInstancePO = nodeInstanceDAO.selectByNodeInstanceId(flowInstanceId, sourceNodeInstanceId);
+        NodeInstance sourceNodeInstancePO = nodeInstanceService.nodeInstanceId(sourceNodeInstanceId, flowInstanceId);
         if (sourceNodeInstancePO == null) {
             LOGGER.warn("getRollbackExecutor failed: cannot find sourceNodeInstance from db."
                     + "||flowInstanceId={}||sourceNodeInstanceId={}", flowInstanceId, sourceNodeInstanceId);
@@ -276,7 +275,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
     }
 
     protected FlowElement calculateNextNode(FlowElement currentFlowElement, Map<String, FlowElement> flowElementMap,
-                                            Map<String, InstanceData> instanceDataMap) throws ProcessException {
+                                            Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         FlowElement nextFlowElement = calculateOutgoing(currentFlowElement, flowElementMap, instanceDataMap);
 
         while (nextFlowElement.getType() == FlowElementType.SEQUENCE_FLOW) {
@@ -286,7 +285,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
     }
 
     private FlowElement calculateOutgoing(FlowElement flowElement, Map<String, FlowElement> flowElementMap,
-                                          Map<String, InstanceData> instanceDataMap) throws ProcessException {
+                                          Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         FlowElement defaultElement = null;
 
         List<String> outgoingList = flowElement.getOutgoing();
@@ -313,7 +312,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         throw new ProcessException(ErrorEnum.GET_OUTGOING_FAILED);
     }
 
-    protected boolean processCondition(String expression, Map<String, InstanceData> instanceDataMap) throws ProcessException {
+    protected boolean processCondition(String expression, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         Map<String, Object> dataMap = InstanceDataUtil.parseInstanceDataMap(instanceDataMap);
         return expressionCalculator.calculate(expression, dataMap);
     }

@@ -4,10 +4,8 @@ import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.common.FlowDefinitionStatus;
 import com.didiglobal.turbo.engine.common.FlowDeploymentStatus;
 import com.didiglobal.turbo.engine.common.FlowModuleEnum;
-import com.didiglobal.turbo.engine.dao.FlowDefinitionDAO;
-import com.didiglobal.turbo.engine.dao.FlowDeploymentDAO;
-import com.didiglobal.turbo.engine.entity.FlowDefinitionPO;
-import com.didiglobal.turbo.engine.entity.FlowDeploymentPO;
+import com.didiglobal.turbo.engine.entity.FlowDefinition;
+import com.didiglobal.turbo.engine.entity.FlowDeployment;
 import com.didiglobal.turbo.engine.exception.DefinitionException;
 import com.didiglobal.turbo.engine.exception.ParamException;
 import com.didiglobal.turbo.engine.exception.TurboException;
@@ -20,11 +18,13 @@ import com.didiglobal.turbo.engine.result.CreateFlowResult;
 import com.didiglobal.turbo.engine.result.DeployFlowResult;
 import com.didiglobal.turbo.engine.result.FlowModuleResult;
 import com.didiglobal.turbo.engine.result.UpdateFlowResult;
+import com.didiglobal.turbo.engine.service.FlowDefinitionService;
+import com.didiglobal.turbo.engine.service.FlowDeploymentService;
 import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.didiglobal.turbo.engine.util.SnowFlake;
 import com.didiglobal.turbo.engine.validator.ModelValidator;
 import com.didiglobal.turbo.engine.validator.ParamValidator;
-import java.util.Date;
+import java.time.LocalDateTime;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -42,27 +42,26 @@ public class DefinitionProcessor {
     private ModelValidator modelValidator;
 
     @Resource
-    private FlowDefinitionDAO flowDefinitionDAO;
+    private FlowDefinitionService flowDefinitionService;
 
     @Resource
-    private FlowDeploymentDAO flowDeploymentDAO;
+    private FlowDeploymentService flowDeploymentService;
 
     public CreateFlowResult create(CreateFlowParam createFlowParam) {
         CreateFlowResult createFlowResult = new CreateFlowResult();
         try {
             ParamValidator.validate(createFlowParam);
 
-            FlowDefinitionPO flowDefinitionPO = new FlowDefinitionPO();
+            FlowDefinition flowDefinitionPO = new FlowDefinition();
             BeanUtils.copyProperties(createFlowParam, flowDefinitionPO);
             String flowModuleId = SnowFlake.genId();
             flowDefinitionPO.setFlowModuleId(flowModuleId);
             flowDefinitionPO.setStatus(FlowDefinitionStatus.INIT);
-            Date date = new Date();
-            flowDefinitionPO.setCreateTime(date);
-            flowDefinitionPO.setModifyTime(date);
+            flowDefinitionPO.setCreateTime(LocalDateTime.now());
+            flowDefinitionPO.setModifyTime(LocalDateTime.now());
 
-            int rows = flowDefinitionDAO.insert(flowDefinitionPO);
-            if (rows != 1) {
+            boolean rows = flowDefinitionService.save(flowDefinitionPO);
+            if (!rows) {
                 LOGGER.warn("create flow failed: insert to db failed.||createFlowParam={}", createFlowParam);
                 throw new DefinitionException(ErrorEnum.DEFINITION_INSERT_INVALID);
             }
@@ -80,13 +79,13 @@ public class DefinitionProcessor {
         try {
             ParamValidator.validate(updateFlowParam);
 
-            FlowDefinitionPO flowDefinitionPO = new FlowDefinitionPO();
+            FlowDefinition flowDefinitionPO = new FlowDefinition();
             BeanUtils.copyProperties(updateFlowParam, flowDefinitionPO);
             flowDefinitionPO.setStatus(FlowDefinitionStatus.EDITING);
-            flowDefinitionPO.setModifyTime(new Date());
+            flowDefinitionPO.setModifyTime(LocalDateTime.now());
 
-            int rows = flowDefinitionDAO.updateByModuleId(flowDefinitionPO);
-            if (rows != 1) {
+            boolean rows = flowDefinitionService.updateByModelId(flowDefinitionPO);
+            if (!rows) {
                 LOGGER.warn("update flow failed: update to db failed.||updateFlowParam={}", updateFlowParam);
                 throw new DefinitionException(ErrorEnum.DEFINITION_UPDATE_INVALID);
             }
@@ -102,7 +101,7 @@ public class DefinitionProcessor {
         try {
             ParamValidator.validate(deployFlowParam);
 
-            FlowDefinitionPO flowDefinitionPO = flowDefinitionDAO.selectByModuleId(deployFlowParam.getFlowModuleId());
+            FlowDefinition flowDefinitionPO = flowDefinitionService.byModelId(deployFlowParam.getFlowModuleId());
             if (null == flowDefinitionPO) {
                 LOGGER.warn("deploy flow failed: flow is not exist.||deployFlowParam={}", deployFlowParam);
                 throw new DefinitionException(ErrorEnum.FLOW_NOT_EXIST);
@@ -117,14 +116,14 @@ public class DefinitionProcessor {
             String flowModel = flowDefinitionPO.getFlowModel();
             modelValidator.validate(flowModel);
 
-            FlowDeploymentPO flowDeploymentPO = new FlowDeploymentPO();
+            FlowDeployment flowDeploymentPO = new FlowDeployment();
             BeanUtils.copyProperties(flowDefinitionPO, flowDeploymentPO);
             String flowDeployId = SnowFlake.genId();
             flowDeploymentPO.setFlowDeployId(flowDeployId);
             flowDeploymentPO.setStatus(FlowDeploymentStatus.DEPLOYED);
 
-            int rows = flowDeploymentDAO.insert(flowDeploymentPO);
-            if (rows != 1) {
+            boolean rows = flowDeploymentService.save(flowDeploymentPO);
+            if (!rows) {
                 LOGGER.warn("deploy flow failed: insert to db failed.||deployFlowParam={}", deployFlowParam);
                 throw new DefinitionException(ErrorEnum.DEFINITION_INSERT_INVALID);
             }
@@ -156,7 +155,7 @@ public class DefinitionProcessor {
     }
 
     private FlowModuleResult getFlowModuleByFlowModuleId(String flowModuleId) throws ParamException {
-        FlowDefinitionPO flowDefinitionPO = flowDefinitionDAO.selectByModuleId(flowModuleId);
+        FlowDefinition flowDefinitionPO = flowDefinitionService.byModelId(flowModuleId);
         if (flowDefinitionPO == null) {
             LOGGER.warn("getFlowModuleByFlowModuleId failed: can not find flowDefinitionPO.||flowModuleId={}", flowModuleId);
             throw new ParamException(ErrorEnum.PARAM_INVALID.getErrNo(), "flowDefinitionPO is not exist");
@@ -170,7 +169,7 @@ public class DefinitionProcessor {
     }
 
     private FlowModuleResult getFlowModuleByFlowDeployId(String flowDeployId) throws ParamException {
-        FlowDeploymentPO flowDeploymentPO = flowDeploymentDAO.selectByDeployId(flowDeployId);
+        FlowDeployment flowDeploymentPO = flowDeploymentService.deployIdOrFlowModuleId(flowDeployId, null);
         if (flowDeploymentPO == null) {
             LOGGER.warn("getFlowModuleByFlowDeployId failed: can not find flowDefinitionPO.||flowDeployId={}", flowDeployId);
             throw new ParamException(ErrorEnum.PARAM_INVALID.getErrNo(), "flowDefinitionPO is not exist");

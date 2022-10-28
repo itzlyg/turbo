@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.bo;
 
 public class NodeInstanceBO {
     //used while updateById
-    private Long id;
+    private String id;
     private String nodeInstanceId;
     private String nodeKey;
     private String sourceNodeInstanceId;
@@ -10,11 +10,11 @@ public class NodeInstanceBO {
     private String instanceDataId;
     private int status;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,11 +1,11 @@
 package com.didiglobal.turbo.engine.bo;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-public class NodeInstance extends ElementInstance {
+public class NodeInstance extends ElementInstanceBO {
     private String nodeInstanceId;
-    private Date createTime;
-    private Date modifyTime;
+    private LocalDateTime createTime;
+    private LocalDateTime modifyTime;
 
     public String getNodeInstanceId() {
         return nodeInstanceId;
@@ -15,19 +15,19 @@ public class NodeInstance extends ElementInstance {
         this.nodeInstanceId = nodeInstanceId;
     }
 
-    public Date getCreateTime() {
+    public LocalDateTime getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(LocalDateTime createTime) {
         this.createTime = createTime;
     }
 
-    public Date getModifyTime() {
+    public LocalDateTime getModifyTime() {
         return modifyTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(LocalDateTime modifyTime) {
         this.modifyTime = modifyTime;
     }
 

@@ -1,21 +1,20 @@
 package com.didiglobal.turbo.engine.executor;
 
-import com.didiglobal.turbo.engine.bo.HookInfoResponse;
+import com.didiglobal.turbo.engine.bo.HookInfoResponseBO;
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.common.Constants;
 import com.didiglobal.turbo.engine.common.InstanceDataType;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
 import com.didiglobal.turbo.engine.config.HookProperties;
-import com.didiglobal.turbo.engine.entity.InstanceDataPO;
+import com.didiglobal.turbo.engine.entity.InstanceData;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
-import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.HttpUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import com.didiglobal.turbo.engine.util.JsonUtil;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +51,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
 
         //http post hook and get data result
-        Map<String, InstanceData> hookInfoValueMap = getHookInfoValueMap(runtimeContext.getFlowInstanceId(), hookInfoParam);
+        Map<String, com.didiglobal.turbo.engine.model.InstanceData> hookInfoValueMap = getHookInfoValueMap(runtimeContext.getFlowInstanceId(), hookInfoParam);
         LOGGER.info("doExecute getHookInfoValueMap.||hookInfoValueMap={}", hookInfoValueMap);
         if (MapUtils.isEmpty(hookInfoValueMap)) {
             LOGGER.warn("doExecute: hookInfoValueMap is empty.||flowInstanceId={}||hookInfoParam={}||nodeKey={}",
@@ -61,7 +60,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
 
         //merge data to current dataMap
-        Map<String, InstanceData> dataMap = runtimeContext.getInstanceDataMap();
+        Map<String, com.didiglobal.turbo.engine.model.InstanceData> dataMap = runtimeContext.getInstanceDataMap();
         dataMap.putAll(hookInfoValueMap);
 
         //save data
@@ -71,7 +70,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
     }
 
-    private Map<String, InstanceData> getHookInfoValueMap(String flowInstanceId, String hookInfoParam) {
+    private Map<String, com.didiglobal.turbo.engine.model.InstanceData> getHookInfoValueMap(String flowInstanceId, String hookInfoParam) {
         //get hook config: url and timeout
         String hookUrl = hookProperties.getUrl();
         if (StringUtils.isBlank(hookUrl)) {
@@ -90,7 +89,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         hookParamMap.put("hookInfoParam", hookInfoParam);
 
         String responseStr = HttpUtil.postJson(HOOK_URL_NAME, hookUrl, JsonUtil.toJson(hookParamMap), timeout);
-        HookInfoResponse hookInfoResponse = JsonUtil.toBean(responseStr, HookInfoResponse.class);
+        HookInfoResponseBO hookInfoResponse = JsonUtil.toBean(responseStr, HookInfoResponseBO.class);
 
         if (hookInfoResponse == null || hookInfoResponse.getStatus() != 0) {
             LOGGER.warn("getHookInfoValueMap failed: hookInfoResponse is null." +
@@ -113,26 +112,26 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
 
         }
 
-        List<InstanceData> dataList = JsonUtil.toBeans(JsonUtil.toJson(data.get(PARAM_DATA_LIST)), InstanceData.class);
+        List<com.didiglobal.turbo.engine.model.InstanceData> dataList = JsonUtil.toBeans(JsonUtil.toJson(data.get(PARAM_DATA_LIST)), com.didiglobal.turbo.engine.model.InstanceData.class);
         return InstanceDataUtil.getInstanceDataMap(dataList);
     }
 
     private String saveInstanceDataPO(RuntimeContext runtimeContext) {
         String instanceDataId = genId();
-        InstanceDataPO instanceDataPO = buildHookInstanceData(instanceDataId, runtimeContext);
-        instanceDataDAO.insert(instanceDataPO);
+        InstanceData instanceDataPO = buildHookInstanceData(instanceDataId, runtimeContext);
+        instanceDataService.save(instanceDataPO);
         return instanceDataId;
     }
 
-    private InstanceDataPO buildHookInstanceData(String instanceDataId, RuntimeContext runtimeContext) {
-        InstanceDataPO instanceDataPO = new InstanceDataPO();
+    private InstanceData buildHookInstanceData(String instanceDataId, RuntimeContext runtimeContext) {
+        InstanceData instanceDataPO = new InstanceData();
         BeanUtils.copyProperties(runtimeContext, instanceDataPO);
         instanceDataPO.setInstanceDataId(instanceDataId);
         instanceDataPO.setInstanceData(InstanceDataUtil.getInstanceDataListStr(runtimeContext.getInstanceDataMap()));
         instanceDataPO.setNodeInstanceId(runtimeContext.getCurrentNodeInstance().getNodeInstanceId());
         instanceDataPO.setNodeKey(runtimeContext.getCurrentNodeModel().getKey());
         instanceDataPO.setType(InstanceDataType.HOOK);
-        instanceDataPO.setCreateTime(new Date());
+        instanceDataPO.setCreateTime(LocalDateTime.now());
         return instanceDataPO;
     }
 

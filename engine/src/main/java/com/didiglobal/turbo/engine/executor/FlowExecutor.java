@@ -9,19 +9,18 @@ import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.common.NodeInstanceType;
 import com.didiglobal.turbo.engine.common.ProcessStatus;
 import com.didiglobal.turbo.engine.common.RuntimeContext;
-import com.didiglobal.turbo.engine.dao.ProcessInstanceDAO;
-import com.didiglobal.turbo.engine.entity.FlowInstancePO;
-import com.didiglobal.turbo.engine.entity.InstanceDataPO;
-import com.didiglobal.turbo.engine.entity.NodeInstanceLogPO;
-import com.didiglobal.turbo.engine.entity.NodeInstancePO;
+import com.didiglobal.turbo.engine.entity.FlowInstance;
+import com.didiglobal.turbo.engine.entity.InstanceData;
+import com.didiglobal.turbo.engine.entity.NodeInstance;
+import com.didiglobal.turbo.engine.entity.NodeInstanceLog;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.exception.ReentrantException;
 import com.didiglobal.turbo.engine.model.FlowElement;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.service.FlowInstanceService;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +35,7 @@ import org.springframework.stereotype.Service;
 public class FlowExecutor extends RuntimeExecutor {
 
     @Resource
-    private ProcessInstanceDAO processInstanceDAO;
+    private FlowInstanceService flowInstanceService;
 
     ////////////////////////////////////////execute////////////////////////////////////////
 
@@ -67,7 +66,7 @@ public class FlowExecutor extends RuntimeExecutor {
      */
     private void preExecute(RuntimeContext runtimeContext) throws ProcessException {
         //1.save FlowInstancePO into db
-        FlowInstancePO flowInstancePO = saveFlowInstance(runtimeContext);
+        FlowInstance flowInstancePO = saveFlowInstance(runtimeContext);
 
         //2.save InstanceDataPO into db
         String instanceDataId = saveInstanceData(flowInstancePO, runtimeContext.getInstanceDataMap());
@@ -76,37 +75,36 @@ public class FlowExecutor extends RuntimeExecutor {
         fillExecuteContext(runtimeContext, flowInstancePO.getFlowInstanceId(), instanceDataId);
     }
 
-    private FlowInstancePO saveFlowInstance(RuntimeContext runtimeContext) throws ProcessException {
-        FlowInstancePO flowInstancePO = buildFlowInstancePO(runtimeContext);
-        int result = processInstanceDAO.insert(flowInstancePO);
-        if (result == 1) {
+    private FlowInstance saveFlowInstance(RuntimeContext runtimeContext) throws ProcessException {
+        FlowInstance flowInstancePO = buildFlowInstancePO(runtimeContext);
+        boolean result = flowInstanceService.save(flowInstancePO);
+        if (result) {
             return flowInstancePO;
         }
         LOGGER.warn("saveFlowInstancePO: insert failed.||flowInstancePO={}", flowInstancePO);
         throw new ProcessException(ErrorEnum.SAVE_FLOW_INSTANCE_FAILED);
     }
 
-    private FlowInstancePO buildFlowInstancePO(RuntimeContext runtimeContext) {
-        FlowInstancePO flowInstancePO = new FlowInstancePO();
+    private FlowInstance buildFlowInstancePO(RuntimeContext runtimeContext) {
+        FlowInstance flowInstancePO = new FlowInstance();
         // copy flow info
         BeanUtils.copyProperties(runtimeContext, flowInstancePO);
         // generate flowInstanceId
         flowInstancePO.setFlowInstanceId(genId());
         flowInstancePO.setStatus(FlowInstanceStatus.RUNNING);
-        Date currentTime = new Date();
-        flowInstancePO.setCreateTime(currentTime);
-        flowInstancePO.setModifyTime(currentTime);
+        flowInstancePO.setCreateTime(LocalDateTime.now());
+        flowInstancePO.setModifyTime(LocalDateTime.now());
         return flowInstancePO;
     }
 
-    private String saveInstanceData(FlowInstancePO flowInstancePO, Map<String, InstanceData> instanceDataMap) throws ProcessException {
+    private String saveInstanceData(FlowInstance flowInstancePO, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         if (MapUtils.isEmpty(instanceDataMap)) {
             return StringUtils.EMPTY;
         }
 
-        InstanceDataPO instanceDataPO = buildInstanceDataPO(flowInstancePO, instanceDataMap);
-        int result = instanceDataDAO.insert(instanceDataPO);
-        if (result == 1) {
+        InstanceData instanceDataPO = buildInstanceDataPO(flowInstancePO, instanceDataMap);
+        boolean result = instanceDataService.save(instanceDataPO);
+        if (result) {
             return instanceDataPO.getInstanceDataId();
         }
 
@@ -114,8 +112,8 @@ public class FlowExecutor extends RuntimeExecutor {
         throw new ProcessException(ErrorEnum.SAVE_INSTANCE_DATA_FAILED);
     }
 
-    private InstanceDataPO buildInstanceDataPO(FlowInstancePO flowInstancePO, Map<String, InstanceData> instanceDataMap) {
-        InstanceDataPO instanceDataPO = new InstanceDataPO();
+    private InstanceData buildInstanceDataPO(FlowInstance flowInstancePO, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) {
+        InstanceData instanceDataPO = new InstanceData();
         // copy flow info & flowInstanceId
         BeanUtils.copyProperties(flowInstancePO, instanceDataPO);
 
@@ -125,7 +123,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         instanceDataPO.setNodeInstanceId(StringUtils.EMPTY);
         instanceDataPO.setNodeKey(StringUtils.EMPTY);
-        instanceDataPO.setCreateTime(new Date());
+        instanceDataPO.setCreateTime(LocalDateTime.now());
         instanceDataPO.setType(InstanceDataType.INIT);
         return instanceDataPO;
     }
@@ -179,7 +177,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         //3.update flowInstance status while completed
         if (isCompleted(runtimeContext)) {
-            processInstanceDAO.updateStatus(runtimeContext.getFlowInstanceId(), FlowInstanceStatus.COMPLETED);
+            flowInstanceService.updateStatus(runtimeContext.getFlowInstanceId(), FlowInstanceStatus.COMPLETED);
 
             runtimeContext.setFlowInstanceStatus(FlowInstanceStatus.COMPLETED);
 
@@ -223,7 +221,7 @@ public class FlowExecutor extends RuntimeExecutor {
         String nodeInstanceId = suspendNodeInstance.getNodeInstanceId();
 
         //1.get instanceData from db
-        NodeInstancePO nodeInstancePO = nodeInstanceDAO.selectByNodeInstanceId(flowInstanceId, nodeInstanceId);
+        NodeInstance nodeInstancePO = nodeInstanceService.nodeInstanceId(nodeInstanceId, flowInstanceId);
         if (nodeInstancePO == null) {
             LOGGER.warn("preCommit failed: cannot find nodeInstancePO from db.||flowInstanceId={}||nodeInstanceId={}",
                     flowInstanceId, nodeInstanceId);
@@ -242,12 +240,12 @@ public class FlowExecutor extends RuntimeExecutor {
             suspendNodeInstance.setStatus(nodeInstancePO.getStatus());
             throw new ReentrantException(ErrorEnum.REENTRANT_WARNING);
         }
-        Map<String, InstanceData> instanceDataMap;
+        Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap;
         String instanceDataId = nodeInstancePO.getInstanceDataId();
         if (StringUtils.isBlank(instanceDataId)) {
             instanceDataMap = new HashMap<>();
         } else {
-            InstanceDataPO instanceDataPO = instanceDataDAO.select(flowInstanceId, instanceDataId);
+            InstanceData instanceDataPO = instanceDataService.select(flowInstanceId, instanceDataId);
             if (instanceDataPO == null) {
                 LOGGER.warn("preCommit failed: cannot find instanceDataPO from db." +
                         "||flowInstanceId={}||instanceDataId={}", flowInstanceId, instanceDataId);
@@ -257,29 +255,29 @@ public class FlowExecutor extends RuntimeExecutor {
         }
 
         //2.merge data while commitDataMap is not empty
-        Map<String, InstanceData> commitDataMap = runtimeContext.getInstanceDataMap();
+        Map<String, com.didiglobal.turbo.engine.model.InstanceData> commitDataMap = runtimeContext.getInstanceDataMap();
         if (MapUtils.isNotEmpty(commitDataMap)) {
             instanceDataId = genId();
             instanceDataMap.putAll(commitDataMap);
 
-            InstanceDataPO commitInstanceDataPO = buildCommitInstanceData(runtimeContext, nodeInstanceId,
+            InstanceData commitInstanceDataPO = buildCommitInstanceData(runtimeContext, nodeInstanceId,
                     nodeInstancePO.getNodeKey(), instanceDataId, instanceDataMap);
-            instanceDataDAO.insert(commitInstanceDataPO);
+            instanceDataService.save(commitInstanceDataPO);
         }
 
         //3.update runtimeContext
         fillCommitContext(runtimeContext, nodeInstancePO, instanceDataId, instanceDataMap);
     }
 
-    private InstanceDataPO buildCommitInstanceData(RuntimeContext runtimeContext, String nodeInstanceId, String nodeKey,
-                                                   String newInstanceDataId, Map<String, InstanceData> instanceDataMap) {
-        InstanceDataPO instanceDataPO = new InstanceDataPO();
+    private InstanceData buildCommitInstanceData(RuntimeContext runtimeContext, String nodeInstanceId, String nodeKey,
+                                                 String newInstanceDataId, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) {
+        InstanceData instanceDataPO = new InstanceData();
         BeanUtils.copyProperties(runtimeContext, instanceDataPO);
 
         instanceDataPO.setNodeInstanceId(nodeInstanceId);
         instanceDataPO.setNodeKey(nodeKey);
         instanceDataPO.setType(InstanceDataType.COMMIT);
-        instanceDataPO.setCreateTime(new Date());
+        instanceDataPO.setCreateTime(LocalDateTime.now());
 
         instanceDataPO.setInstanceDataId(newInstanceDataId);
         instanceDataPO.setInstanceData(InstanceDataUtil.getInstanceDataListStr(instanceDataMap));
@@ -287,8 +285,8 @@ public class FlowExecutor extends RuntimeExecutor {
         return instanceDataPO;
     }
 
-    private void fillCommitContext(RuntimeContext runtimeContext, NodeInstancePO nodeInstancePO, String instanceDataId,
-                                   Map<String, InstanceData> instanceDataMap) throws ProcessException {
+    private void fillCommitContext(RuntimeContext runtimeContext, NodeInstance nodeInstancePO, String instanceDataId,
+                                   Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
 
         runtimeContext.setInstanceDataId(instanceDataId);
         runtimeContext.setInstanceDataMap(instanceDataMap);
@@ -319,7 +317,7 @@ public class FlowExecutor extends RuntimeExecutor {
         saveNodeInstanceList(runtimeContext, NodeInstanceType.COMMIT);
 
         if (isCompleted(runtimeContext)) {
-            processInstanceDAO.updateStatus(runtimeContext.getFlowInstanceId(), FlowInstanceStatus.COMPLETED);
+            flowInstanceService.updateStatus(runtimeContext.getFlowInstanceId(), FlowInstanceStatus.COMPLETED);
 
             //update context
             runtimeContext.setFlowInstanceStatus(FlowInstanceStatus.COMPLETED);
@@ -354,7 +352,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         //1.check node: only the latest enabled(ACTIVE or COMPLETED) nodeInstance can be rollbacked.
         String suspendNodeInstanceId = runtimeContext.getSuspendNodeInstance().getNodeInstanceId();
-        NodeInstancePO rollbackNodeInstancePO = getActiveUserTaskForRollback(flowInstanceId, suspendNodeInstanceId,
+        NodeInstance rollbackNodeInstancePO = getActiveUserTaskForRollback(flowInstanceId, suspendNodeInstanceId,
                 runtimeContext.getFlowElementMap());
         if (rollbackNodeInstancePO == null) {
             LOGGER.warn("preRollback failed: cannot rollback.||runtimeContext={}", runtimeContext);
@@ -374,11 +372,11 @@ public class FlowExecutor extends RuntimeExecutor {
 
         //3.get instanceData
         String instanceDataId = rollbackNodeInstancePO.getInstanceDataId();
-        Map<String, InstanceData> instanceDataMap;
+        Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap;
         if (StringUtils.isBlank(instanceDataId)) {
             instanceDataMap = new HashMap<>();
         } else {
-            InstanceDataPO instanceDataPO = instanceDataDAO.select(flowInstanceId, instanceDataId);
+            InstanceData instanceDataPO = instanceDataService.select(flowInstanceId, instanceDataId);
             if (instanceDataPO == null) {
                 LOGGER.warn("preRollback failed: cannot find instanceDataPO from db."
                         + "||flowInstanceId={}||instanceDataId={}", flowInstanceId, instanceDataId);
@@ -394,17 +392,17 @@ public class FlowExecutor extends RuntimeExecutor {
     // TODO: 2020/1/10 clean code
     //1. getActiveUserTask
     //2. if(canRollback): only the active userTask or the lasted completed userTask can be rollback
-    private NodeInstancePO getActiveUserTaskForRollback(String flowInstanceId, String suspendNodeInstanceId,
-                                                        Map<String, FlowElement> flowElementMap) {
-        List<NodeInstancePO> nodeInstancePOList = nodeInstanceDAO.selectDescByFlowInstanceId(flowInstanceId);
+    private NodeInstance getActiveUserTaskForRollback(String flowInstanceId, String suspendNodeInstanceId,
+                                                      Map<String, FlowElement> flowElementMap) {
+        List<NodeInstance> nodeInstancePOList = nodeInstanceService.byFlowInstanceId(flowInstanceId, false);
         if (CollectionUtils.isEmpty(nodeInstancePOList)) {
             LOGGER.warn("getActiveUserTaskForRollback: nodeInstancePOList is empty."
                     + "||flowInstanceId={}||suspendNodeInstanceId={}", flowInstanceId, suspendNodeInstanceId);
             return null;
         }
 
-        NodeInstancePO activeNodeInstancePO = null;
-        for (NodeInstancePO nodeInstancePO : nodeInstancePOList) {
+        NodeInstance activeNodeInstancePO = null;
+        for (NodeInstance nodeInstancePO : nodeInstancePOList) {
             // TODO: 2020/1/10 the first active or completed node must be UserTask
             //ignore userTask
             if (!FlowModelUtil.isElementType(nodeInstancePO.getNodeKey(), flowElementMap, FlowElementType.USER_TASK)) {
@@ -465,8 +463,8 @@ public class FlowExecutor extends RuntimeExecutor {
 
     }
 
-    private void fillRollbackContext(RuntimeContext runtimeContext, NodeInstancePO nodeInstancePO,
-                                     Map<String, InstanceData> instanceDataMap) throws ProcessException {
+    private void fillRollbackContext(RuntimeContext runtimeContext, NodeInstance nodeInstancePO,
+                                     Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
         runtimeContext.setInstanceDataId(nodeInstancePO.getInstanceDataId());
         runtimeContext.setInstanceDataMap(instanceDataMap);
         runtimeContext.setNodeInstanceList(new ArrayList<>());
@@ -475,13 +473,13 @@ public class FlowExecutor extends RuntimeExecutor {
         setCurrentFlowModel(runtimeContext);
     }
 
-    private NodeInstanceBO buildSuspendNodeInstanceBO(NodeInstancePO nodeInstancePO) {
+    private NodeInstanceBO buildSuspendNodeInstanceBO(NodeInstance nodeInstancePO) {
         NodeInstanceBO suspendNodeInstanceBO = new NodeInstanceBO();
         BeanUtils.copyProperties(nodeInstancePO, suspendNodeInstanceBO);
         return suspendNodeInstanceBO;
     }
 
-    private void updateSuspendNodeInstanceBO(NodeInstanceBO suspendNodeInstanceBO, NodeInstancePO nodeInstancePO, String
+    private void updateSuspendNodeInstanceBO(NodeInstanceBO suspendNodeInstanceBO, NodeInstance nodeInstancePO, String
             instanceDataId) {
         suspendNodeInstanceBO.setId(nodeInstancePO.getId());
         suspendNodeInstanceBO.setNodeKey(nodeInstancePO.getNodeKey());
@@ -557,24 +555,24 @@ public class FlowExecutor extends RuntimeExecutor {
             return;
         }
 
-        List<NodeInstancePO> nodeInstancePOList = new ArrayList<>();
-        List<NodeInstanceLogPO> nodeInstanceLogPOList = new ArrayList<>();
+        List<NodeInstance> nodeInstancePOList = new ArrayList<>();
+        List<NodeInstanceLog> nodeInstanceLogPOList = new ArrayList<>();
 
         processNodeList.forEach(nodeInstanceBO -> {
-            NodeInstancePO nodeInstancePO = buildNodeInstancePO(runtimeContext, nodeInstanceBO);
+            NodeInstance nodeInstancePO = buildNodeInstancePO(runtimeContext, nodeInstanceBO);
             if (nodeInstancePO != null) {
                 nodeInstancePOList.add(nodeInstancePO);
 
                 //build nodeInstance log
-                NodeInstanceLogPO nodeInstanceLogPO = buildNodeInstanceLogPO(nodeInstancePO, nodeInstanceType);
+                NodeInstanceLog nodeInstanceLogPO = buildNodeInstanceLogPO(nodeInstancePO, nodeInstanceType);
                 nodeInstanceLogPOList.add(nodeInstanceLogPO);
             }
         });
-        nodeInstanceDAO.insertOrUpdateList(nodeInstancePOList);
-        nodeInstanceLogDAO.insertList(nodeInstanceLogPOList);
+        nodeInstanceService.insertOrUpdateList(nodeInstancePOList);
+        nodeInstanceLogService.saveBatch(nodeInstanceLogPOList);
     }
 
-    private NodeInstancePO buildNodeInstancePO(RuntimeContext runtimeContext, NodeInstanceBO nodeInstanceBO) {
+    private NodeInstance buildNodeInstancePO(RuntimeContext runtimeContext, NodeInstanceBO nodeInstanceBO) {
         if (runtimeContext.getProcessStatus() == ProcessStatus.FAILED) {
             //set status=FAILED unless it is origin processNodeInstance(suspendNodeInstance)
             if (nodeInstanceBO.getNodeKey().equals(runtimeContext.getSuspendNodeInstance().getNodeKey())) {
@@ -584,22 +582,22 @@ public class FlowExecutor extends RuntimeExecutor {
             nodeInstanceBO.setStatus(NodeInstanceStatus.FAILED);
         }
 
-        NodeInstancePO nodeInstancePO = new NodeInstancePO();
+        NodeInstance nodeInstancePO = new NodeInstance();
         BeanUtils.copyProperties(nodeInstanceBO, nodeInstancePO);
         nodeInstancePO.setFlowInstanceId(runtimeContext.getFlowInstanceId());
         nodeInstancePO.setFlowDeployId(runtimeContext.getFlowDeployId());
         nodeInstancePO.setTenant(runtimeContext.getTenant());
         nodeInstancePO.setCaller(runtimeContext.getCaller());
-        Date currentTime = new Date();
-        nodeInstancePO.setCreateTime(currentTime);
-        nodeInstancePO.setModifyTime(currentTime);
+        nodeInstancePO.setCreateTime(LocalDateTime.now());
+        nodeInstancePO.setModifyTime(LocalDateTime.now());
         return nodeInstancePO;
     }
 
-    private NodeInstanceLogPO buildNodeInstanceLogPO(NodeInstancePO nodeInstancePO, int nodeInstanceType) {
-        NodeInstanceLogPO nodeInstanceLogPO = new NodeInstanceLogPO();
+    private NodeInstanceLog buildNodeInstanceLogPO(NodeInstance nodeInstancePO, int nodeInstanceType) {
+        NodeInstanceLog nodeInstanceLogPO = new NodeInstanceLog();
         BeanUtils.copyProperties(nodeInstancePO, nodeInstanceLogPO);
         nodeInstanceLogPO.setType(nodeInstanceType);
+        nodeInstanceLogPO.setId(null);
         return nodeInstanceLogPO;
     }
 

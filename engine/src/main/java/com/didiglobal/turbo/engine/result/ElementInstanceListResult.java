@@ -1,21 +1,21 @@
 package com.didiglobal.turbo.engine.result;
 
-import com.didiglobal.turbo.engine.bo.ElementInstance;
+import com.didiglobal.turbo.engine.bo.ElementInstanceBO;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
 import java.util.List;
 
 public class ElementInstanceListResult extends CommonResult {
-    private List<ElementInstance> elementInstanceList;
+    private List<ElementInstanceBO> elementInstanceList;
 
     public ElementInstanceListResult(ErrorEnum errorEnum) {
         super(errorEnum);
     }
 
-    public List<ElementInstance> getElementInstanceList() {
+    public List<ElementInstanceBO> getElementInstanceList() {
         return elementInstanceList;
     }
 
-    public void setElementInstanceList(List<ElementInstance> elementInstanceList) {
+    public void setElementInstanceList(List<ElementInstanceBO> elementInstanceList) {
         this.elementInstanceList = elementInstanceList;
     }
 

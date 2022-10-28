@@ -2,8 +2,9 @@ package com.didiglobal.turbo.engine.engine;
 
 
 import com.didiglobal.turbo.engine.bo.NodeInstance;
-import com.didiglobal.turbo.engine.entity.FlowDefinitionPO;
-import com.didiglobal.turbo.engine.entity.FlowDeploymentPO;
+import com.didiglobal.turbo.engine.entity.FlowDefinition;
+import com.didiglobal.turbo.engine.entity.FlowDeployment;
+import com.didiglobal.turbo.engine.entity.FlowInstance;
 import com.didiglobal.turbo.engine.model.EndEvent;
 import com.didiglobal.turbo.engine.model.FlowModel;
 import com.didiglobal.turbo.engine.model.InstanceData;
@@ -40,7 +41,7 @@ import com.didiglobal.turbo.engine.result.UpdateFlowResult;
 public interface ProcessEngine {
 
     /**
-     * Create a flow({@link FlowDefinitionPO}) with flowKey and descriptive info.
+     * Create a flow({@link FlowDefinition}) with flowKey and descriptive info.
      * Attention: The {@link FlowModel} of the flow is empty.
      *
      * @param createFlowParam flowKey: business key for the flow
@@ -60,7 +61,7 @@ public interface ProcessEngine {
     /**
      * Deploy a flow by flowModuleId.
      * <p>
-     * Create a {@link FlowDeploymentPO} every time.
+     * Create a {@link FlowDeployment} every time.
      * A flow can be started to process only after deployed.
      *
      * @param deployFlowParam flowModuleId: specify the flow to deploy
@@ -73,15 +74,15 @@ public interface ProcessEngine {
      * <p>
      * It'll query by flowDeployId while the flowDeployId is not blank. Otherwise, it'll query by flowModuleId.
      *
-     * @param getFlowModuleParam flowModuleId specify the flow and get info from {@link FlowDefinitionPO}
-     *                           flowDeployId specify the flow and get info from {@link FlowDeploymentPO}
+     * @param getFlowModuleParam flowModuleId specify the flow and get info from {@link FlowDefinition}
+     *                           flowDeployId specify the flow and get info from {@link FlowDeployment}
      */
     FlowModuleResult getFlowModule(GetFlowModuleParam getFlowModuleParam);
 
     /**
      * Start process
      * <p>
-     * 1.Create a flow instance({@link com.didiglobal.turbo.engine.entity.FlowInstancePO}) according to the specified
+     * 1.Create a flow instance({@link FlowInstance}) according to the specified
      * flow for the execution every time;
      * 2.Process the flow instance from the unique {@link StartEvent} node
      * until it reaches an {@link UserTask} node or
