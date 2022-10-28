@@ -3,7 +3,7 @@ spring:
     username: root
     password: root1@0Can
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://124.223.64.13:18012/scrm_sop?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true
+    url: jdbc:mysql://127.0.0.1:8080/scrm_sop?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&autoReconnect=true
 
 
 logging:
