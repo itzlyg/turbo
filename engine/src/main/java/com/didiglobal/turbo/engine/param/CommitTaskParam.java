@@ -1,16 +1,16 @@
 package com.didiglobal.turbo.engine.param;
 
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import java.util.List;
 
 public class CommitTaskParam extends RuntimeTaskParam {
-    private List<InstanceData> variables;
+    private List<InstanceDataModel> variables;
 
-    public List<InstanceData> getVariables() {
+    public List<InstanceDataModel> getVariables() {
         return variables;
     }
 
-    public void setVariables(List<InstanceData> variables) {
+    public void setVariables(List<InstanceDataModel> variables) {
         this.variables = variables;
     }
 

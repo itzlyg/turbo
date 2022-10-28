@@ -1,12 +1,12 @@
 package com.didiglobal.turbo.engine.param;
 
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import java.util.List;
 
 public class StartProcessParam {
     private String flowModuleId;
     private String flowDeployId;
-    private List<InstanceData> variables;
+    private List<InstanceDataModel> variables;
 
     public String getFlowModuleId() {
         return flowModuleId;
@@ -24,11 +24,11 @@ public class StartProcessParam {
         this.flowDeployId = flowDeployId;
     }
 
-    public List<InstanceData> getVariables() {
+    public List<InstanceDataModel> getVariables() {
         return variables;
     }
 
-    public void setVariables(List<InstanceData> variables) {
+    public void setVariables(List<InstanceDataModel> variables) {
         this.variables = variables;
     }
 

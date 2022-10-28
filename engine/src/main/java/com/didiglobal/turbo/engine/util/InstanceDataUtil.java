@@ -1,7 +1,7 @@
 package com.didiglobal.turbo.engine.util;
 
 import com.didiglobal.turbo.engine.common.DataType;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,44 +14,44 @@ public class InstanceDataUtil {
 
     private InstanceDataUtil() {}
 
-    public static Map<String, InstanceData> getInstanceDataMap(List<InstanceData> instanceDataList) {
+    public static Map<String, InstanceDataModel> getInstanceDataMap(List<InstanceDataModel> instanceDataList) {
         if (CollectionUtils.isEmpty(instanceDataList)) {
             return new HashMap<>();
         }
-        Map<String, InstanceData> instanceDataMap = new HashMap<>();
+        Map<String, InstanceDataModel> instanceDataMap = new HashMap<>();
         instanceDataList.forEach(instanceData -> {
             instanceDataMap.put(instanceData.getKey(), instanceData);
         });
         return instanceDataMap;
     }
 
-    public static Map<String, InstanceData> getInstanceDataMap(String instanceDataStr) {
+    public static Map<String, InstanceDataModel> getInstanceDataMap(String instanceDataStr) {
         if (StringUtils.isBlank(instanceDataStr)) {
             return new HashMap<>();
         }
-        List<InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataStr, InstanceData.class);
+        List<InstanceDataModel> instanceDataList = JsonUtil.toBeans(instanceDataStr, InstanceDataModel.class);
         return getInstanceDataMap(instanceDataList);
     }
 
-    public static List<InstanceData> getInstanceDataList(Map<String, InstanceData> instanceDataMap) {
+    public static List<InstanceDataModel> getInstanceDataList(Map<String, InstanceDataModel> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
             return new ArrayList<>();
         }
-        List<InstanceData> instanceDataList = new ArrayList<>();
+        List<InstanceDataModel> instanceDataList = new ArrayList<>();
         instanceDataMap.forEach((key, instanceData) -> {
             instanceDataList.add(instanceData);
         });
         return instanceDataList;
     }
 
-    public static String getInstanceDataListStr(Map<String, InstanceData> instanceDataMap) {
+    public static String getInstanceDataListStr(Map<String, InstanceDataModel> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
             return JsonUtil.toJson(CollectionUtils.EMPTY_COLLECTION);
         }
         return JsonUtil.toJson(instanceDataMap.values());
     }
 
-    public static Map<String, Object> parseInstanceDataMap(Map<String, InstanceData> instanceDataMap) {
+    public static Map<String, Object> parseInstanceDataMap(Map<String, InstanceDataModel> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
             return new HashMap<>();
         }
@@ -62,7 +62,7 @@ public class InstanceDataUtil {
         return dataMap;
     }
 
-    private static Object parseInstanceData(InstanceData instanceData) {
+    private static Object parseInstanceData(InstanceDataModel instanceData) {
         if (instanceData == null) {
             return null;
         }

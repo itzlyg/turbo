@@ -12,13 +12,15 @@ import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.exception.ReentrantException;
 import com.didiglobal.turbo.engine.exception.SuspendException;
 import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
+
+import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 public abstract class ElementExecutor extends RuntimeExecutor {
 
@@ -173,7 +175,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
             String currentInstanceDataId = currentNodeInstance.getInstanceDataId();
             runtimeContext.setInstanceDataId(currentInstanceDataId);
             InstanceData instanceDataPO = instanceDataService.select(flowInstanceId, currentInstanceDataId);
-            Map<String, com.didiglobal.turbo.engine.model.InstanceData> currentInstanceDataMap = InstanceDataUtil.getInstanceDataMap(instanceDataPO.getInstanceData());
+            Map<String, InstanceDataModel> currentInstanceDataMap = InstanceDataUtil.getInstanceDataMap(instanceDataPO.getInstanceData());
             runtimeContext.setInstanceDataMap(currentInstanceDataMap);
         }
         runtimeContext.setCurrentNodeInstance(currentNodeInstance);
@@ -275,7 +277,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
     }
 
     protected FlowElement calculateNextNode(FlowElement currentFlowElement, Map<String, FlowElement> flowElementMap,
-                                            Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+                                            Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
         FlowElement nextFlowElement = calculateOutgoing(currentFlowElement, flowElementMap, instanceDataMap);
 
         while (nextFlowElement.getType() == FlowElementTypeEnum.SEQUENCE_FLOW.getCode()) {
@@ -285,7 +287,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
     }
 
     private FlowElement calculateOutgoing(FlowElement flowElement, Map<String, FlowElement> flowElementMap,
-                                          Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+                                          Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
         FlowElement defaultElement = null;
 
         List<String> outgoingList = flowElement.getOutgoing();
@@ -312,7 +314,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         throw new ProcessException(ErrorEnum.GET_OUTGOING_FAILED);
     }
 
-    protected boolean processCondition(String expression, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+    protected boolean processCondition(String expression, Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
         Map<String, Object> dataMap = InstanceDataUtil.parseInstanceDataMap(instanceDataMap);
         return expressionCalculator.calculate(expression, dataMap);
     }

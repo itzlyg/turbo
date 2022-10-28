@@ -1,19 +1,19 @@
 package com.didiglobal.turbo.engine.model;
 
-public class InstanceData {
+public class InstanceDataModel {
     private String key;
     private String type;
     private Object value;
 
-    public InstanceData(){
+    public InstanceDataModel(){
 
     }
-    public InstanceData(String key, Object value) {
+    public InstanceDataModel(String key, Object value) {
         this.key = key;
         this.value = value;
     }
 
-    public InstanceData(String key, String type, Object value) {
+    public InstanceDataModel(String key, String type, Object value) {
         this.key = key;
         this.type = type;
         this.value = value;

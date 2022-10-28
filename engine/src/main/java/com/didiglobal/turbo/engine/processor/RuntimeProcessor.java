@@ -19,6 +19,7 @@ import com.didiglobal.turbo.engine.exception.ReentrantException;
 import com.didiglobal.turbo.engine.exception.TurboException;
 import com.didiglobal.turbo.engine.executor.FlowExecutor;
 import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.param.CommitTaskParam;
 import com.didiglobal.turbo.engine.param.RollbackTaskParam;
 import com.didiglobal.turbo.engine.param.StartProcessParam;
@@ -113,7 +114,7 @@ public class RuntimeProcessor {
      * 1.flowInfo: flowDeployId, flowModuleId, tenantId, flowModel(FlowElementList)
      * 2.variables: inputDataList fr. param
      */
-    private RuntimeContext buildStartProcessContext(FlowInfoBO flowInfo, List<com.didiglobal.turbo.engine.model.InstanceData> variables) {
+    private RuntimeContext buildStartProcessContext(FlowInfoBO flowInfo, List<InstanceDataModel> variables) {
         return buildRuntimeContext(flowInfo, variables);
     }
 
@@ -475,7 +476,7 @@ public class RuntimeProcessor {
     public InstanceDataListResult getInstanceData(String flowInstanceId) {
         InstanceData instanceDataPO = instanceDataService.select(flowInstanceId, null);
 
-        List<com.didiglobal.turbo.engine.model.InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataPO.getInstanceData(), com.didiglobal.turbo.engine.model.InstanceData.class);
+        List<InstanceDataModel> instanceDataList = JsonUtil.toBeans(instanceDataPO.getInstanceData(), InstanceDataModel.class);
         if (CollectionUtils.isEmpty(instanceDataList)) {
             instanceDataList =  new ArrayList<>();
         }
@@ -534,9 +535,9 @@ public class RuntimeProcessor {
         return runtimeContext;
     }
 
-    private RuntimeContext buildRuntimeContext(FlowInfoBO flowInfo, List<com.didiglobal.turbo.engine.model.InstanceData> variables) {
+    private RuntimeContext buildRuntimeContext(FlowInfoBO flowInfo, List<InstanceDataModel> variables) {
         RuntimeContext runtimeContext = buildRuntimeContext(flowInfo);
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap = InstanceDataUtil.getInstanceDataMap(variables);
+        Map<String, InstanceDataModel> instanceDataMap = InstanceDataUtil.getInstanceDataMap(variables);
         runtimeContext.setInstanceDataMap(instanceDataMap);
         return runtimeContext;
     }

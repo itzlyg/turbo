@@ -7,7 +7,7 @@ import com.didiglobal.turbo.engine.entity.FlowDeployment;
 import com.didiglobal.turbo.engine.entity.FlowInstance;
 import com.didiglobal.turbo.engine.model.EndEvent;
 import com.didiglobal.turbo.engine.model.FlowModel;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.model.StartEvent;
 import com.didiglobal.turbo.engine.model.UserTask;
 import com.didiglobal.turbo.engine.param.CommitTaskParam;
@@ -145,7 +145,7 @@ public interface ProcessEngine {
     ElementInstanceListResult getHistoryElementList(String flowInstanceId);
 
     /**
-     * Get latest {@link InstanceData} list of the specified flow instance.
+     * Get latest {@link InstanceDataModel} list of the specified flow instance.
      *
      * @param flowInstanceId
      */

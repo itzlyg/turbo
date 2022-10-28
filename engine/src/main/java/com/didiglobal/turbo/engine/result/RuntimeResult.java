@@ -2,14 +2,14 @@ package com.didiglobal.turbo.engine.result;
 
 import com.didiglobal.turbo.engine.bo.NodeInstance;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import java.util.List;
 
 public class RuntimeResult extends CommonResult {
     private String flowInstanceId;
     private int status;
     private NodeInstance activeTaskInstance;
-    private List<InstanceData> variables;
+    private List<InstanceDataModel> variables;
 
     public RuntimeResult() {
         super();
@@ -43,11 +43,11 @@ public class RuntimeResult extends CommonResult {
         this.activeTaskInstance = activeTaskInstance;
     }
 
-    public List<InstanceData> getVariables() {
+    public List<InstanceDataModel> getVariables() {
         return variables;
     }
 
-    public void setVariables(List<InstanceData> variables) {
+    public void setVariables(List<InstanceDataModel> variables) {
         this.variables = variables;
     }
 

@@ -10,19 +10,21 @@ import com.didiglobal.turbo.engine.config.HookProperties;
 import com.didiglobal.turbo.engine.entity.InstanceData;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.HttpUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import com.didiglobal.turbo.engine.util.JsonUtil;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Resource;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExclusiveGatewayExecutor extends ElementExecutor {
@@ -51,7 +53,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
 
         //http post hook and get data result
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> hookInfoValueMap = getHookInfoValueMap(runtimeContext.getFlowInstanceId(), hookInfoParam);
+        Map<String, InstanceDataModel> hookInfoValueMap = getHookInfoValueMap(runtimeContext.getFlowInstanceId(), hookInfoParam);
         LOGGER.info("doExecute getHookInfoValueMap.||hookInfoValueMap={}", hookInfoValueMap);
         if (MapUtils.isEmpty(hookInfoValueMap)) {
             LOGGER.warn("doExecute: hookInfoValueMap is empty.||flowInstanceId={}||hookInfoParam={}||nodeKey={}",
@@ -60,7 +62,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
 
         //merge data to current dataMap
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> dataMap = runtimeContext.getInstanceDataMap();
+        Map<String, InstanceDataModel> dataMap = runtimeContext.getInstanceDataMap();
         dataMap.putAll(hookInfoValueMap);
 
         //save data
@@ -70,7 +72,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
     }
 
-    private Map<String, com.didiglobal.turbo.engine.model.InstanceData> getHookInfoValueMap(String flowInstanceId, String hookInfoParam) {
+    private Map<String, InstanceDataModel> getHookInfoValueMap(String flowInstanceId, String hookInfoParam) {
         //get hook config: url and timeout
         String hookUrl = hookProperties.getUrl();
         if (StringUtils.isBlank(hookUrl)) {
@@ -112,7 +114,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
 
         }
 
-        List<com.didiglobal.turbo.engine.model.InstanceData> dataList = JsonUtil.toBeans(JsonUtil.toJson(data.get(PARAM_DATA_LIST)), com.didiglobal.turbo.engine.model.InstanceData.class);
+        List<InstanceDataModel> dataList = JsonUtil.toBeans(JsonUtil.toJson(data.get(PARAM_DATA_LIST)), InstanceDataModel.class);
         return InstanceDataUtil.getInstanceDataMap(dataList);
     }
 

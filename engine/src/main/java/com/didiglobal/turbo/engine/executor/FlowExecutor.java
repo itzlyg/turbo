@@ -16,6 +16,7 @@ import com.didiglobal.turbo.engine.entity.NodeInstanceLog;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.exception.ReentrantException;
 import com.didiglobal.turbo.engine.model.FlowElement;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.service.FlowInstanceService;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
@@ -97,7 +98,7 @@ public class FlowExecutor extends RuntimeExecutor {
         return flowInstancePO;
     }
 
-    private String saveInstanceData(FlowInstance flowInstancePO, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+    private String saveInstanceData(FlowInstance flowInstancePO, Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
         if (MapUtils.isEmpty(instanceDataMap)) {
             return StringUtils.EMPTY;
         }
@@ -112,7 +113,7 @@ public class FlowExecutor extends RuntimeExecutor {
         throw new ProcessException(ErrorEnum.SAVE_INSTANCE_DATA_FAILED);
     }
 
-    private InstanceData buildInstanceDataPO(FlowInstance flowInstancePO, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) {
+    private InstanceData buildInstanceDataPO(FlowInstance flowInstancePO, Map<String, InstanceDataModel> instanceDataMap) {
         InstanceData instanceDataPO = new InstanceData();
         // copy flow info & flowInstanceId
         BeanUtils.copyProperties(flowInstancePO, instanceDataPO);
@@ -240,7 +241,7 @@ public class FlowExecutor extends RuntimeExecutor {
             suspendNodeInstance.setStatus(nodeInstancePO.getStatus());
             throw new ReentrantException(ErrorEnum.REENTRANT_WARNING);
         }
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap;
+        Map<String, InstanceDataModel> instanceDataMap;
         String instanceDataId = nodeInstancePO.getInstanceDataId();
         if (StringUtils.isBlank(instanceDataId)) {
             instanceDataMap = new HashMap<>();
@@ -255,7 +256,7 @@ public class FlowExecutor extends RuntimeExecutor {
         }
 
         //2.merge data while commitDataMap is not empty
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> commitDataMap = runtimeContext.getInstanceDataMap();
+        Map<String, InstanceDataModel> commitDataMap = runtimeContext.getInstanceDataMap();
         if (MapUtils.isNotEmpty(commitDataMap)) {
             instanceDataId = genId();
             instanceDataMap.putAll(commitDataMap);
@@ -270,7 +271,7 @@ public class FlowExecutor extends RuntimeExecutor {
     }
 
     private InstanceData buildCommitInstanceData(RuntimeContext runtimeContext, String nodeInstanceId, String nodeKey,
-                                                 String newInstanceDataId, Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) {
+                                                 String newInstanceDataId, Map<String, InstanceDataModel> instanceDataMap) {
         InstanceData instanceDataPO = new InstanceData();
         BeanUtils.copyProperties(runtimeContext, instanceDataPO);
 
@@ -286,7 +287,7 @@ public class FlowExecutor extends RuntimeExecutor {
     }
 
     private void fillCommitContext(RuntimeContext runtimeContext, NodeInstance nodeInstancePO, String instanceDataId,
-                                   Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+                                   Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
 
         runtimeContext.setInstanceDataId(instanceDataId);
         runtimeContext.setInstanceDataMap(instanceDataMap);
@@ -372,7 +373,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         //3.get instanceData
         String instanceDataId = rollbackNodeInstancePO.getInstanceDataId();
-        Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap;
+        Map<String, InstanceDataModel> instanceDataMap;
         if (StringUtils.isBlank(instanceDataId)) {
             instanceDataMap = new HashMap<>();
         } else {
@@ -464,7 +465,7 @@ public class FlowExecutor extends RuntimeExecutor {
     }
 
     private void fillRollbackContext(RuntimeContext runtimeContext, NodeInstance nodeInstancePO,
-                                     Map<String, com.didiglobal.turbo.engine.model.InstanceData> instanceDataMap) throws ProcessException {
+                                     Map<String, InstanceDataModel> instanceDataMap) throws ProcessException {
         runtimeContext.setInstanceDataId(nodeInstancePO.getInstanceDataId());
         runtimeContext.setInstanceDataMap(instanceDataMap);
         runtimeContext.setNodeInstanceList(new ArrayList<>());

@@ -3,7 +3,7 @@ package com.didiglobal.turbo.demo.service;
 import com.didiglobal.turbo.demo.util.Constant;
 import com.didiglobal.turbo.demo.util.EntityBuilder;
 import com.didiglobal.turbo.engine.engine.ProcessEngine;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import com.didiglobal.turbo.engine.param.CommitTaskParam;
 import com.didiglobal.turbo.engine.param.CreateFlowParam;
 import com.didiglobal.turbo.engine.param.DeployFlowParam;
@@ -99,8 +99,8 @@ public class LeaveServiceImpl {
     private StartProcessResult startProcess() {
         StartProcessParam startProcessParam = new StartProcessParam();
         startProcessParam.setFlowDeployId(deployFlowResult.getFlowDeployId());
-        List<InstanceData> variables = new ArrayList<>();
-        variables.add(new InstanceData("user_name", "请假人名字"));
+        List<InstanceDataModel> variables = new ArrayList<>();
+        variables.add(new InstanceDataModel("user_name", "请假人名字"));
         startProcessParam.setVariables(variables);
         StartProcessResult startProcessResult = processEngine.startProcess(startProcessParam);
 
@@ -113,9 +113,9 @@ public class LeaveServiceImpl {
         CommitTaskParam commitTaskParam = new CommitTaskParam();
         commitTaskParam.setFlowInstanceId(startProcessResult.getFlowInstanceId());
         commitTaskParam.setTaskInstanceId(startProcessResult.getActiveTaskInstance().getNodeInstanceId());
-        List<InstanceData> variables = new ArrayList<>();
-        variables.add(new InstanceData("user_name", "请假人名字"));
-        variables.add(new InstanceData("n", 1));
+        List<InstanceDataModel> variables = new ArrayList<>();
+        variables.add(new InstanceDataModel("user_name", "请假人名字"));
+        variables.add(new InstanceDataModel("n", 1));
         commitTaskParam.setVariables(variables);
 
         CommitTaskResult commitTaskResult = processEngine.commitTask(commitTaskParam);
@@ -139,9 +139,9 @@ public class LeaveServiceImpl {
         CommitTaskParam commitTaskParam = new CommitTaskParam();
         commitTaskParam.setFlowInstanceId(rollbackTaskResult.getFlowInstanceId());
         commitTaskParam.setTaskInstanceId(rollbackTaskResult.getActiveTaskInstance().getNodeInstanceId());
-        List<InstanceData> variables = new ArrayList<>();
-        variables.add(new InstanceData("user_name", "请假人名字"));
-        variables.add(new InstanceData("n", 2));
+        List<InstanceDataModel> variables = new ArrayList<>();
+        variables.add(new InstanceDataModel("user_name", "请假人名字"));
+        variables.add(new InstanceDataModel("n", 2));
         commitTaskParam.setVariables(variables);
 
         CommitTaskResult commitTaskResult = processEngine.commitTask(commitTaskParam);
@@ -154,9 +154,9 @@ public class LeaveServiceImpl {
         CommitTaskParam commitTaskParam = new CommitTaskParam();
         commitTaskParam.setFlowInstanceId(commitTaskResult.getFlowInstanceId());
         commitTaskParam.setTaskInstanceId(commitTaskResult.getActiveTaskInstance().getNodeInstanceId());
-        List<InstanceData> variables = new ArrayList<>();
-        variables.add(new InstanceData("user_name", "请假人名字"));
-        variables.add(new InstanceData("n", 4));
+        List<InstanceDataModel> variables = new ArrayList<>();
+        variables.add(new InstanceDataModel("user_name", "请假人名字"));
+        variables.add(new InstanceDataModel("n", 4));
         commitTaskParam.setVariables(variables);
 
         CommitTaskResult result = processEngine.commitTask(commitTaskParam);

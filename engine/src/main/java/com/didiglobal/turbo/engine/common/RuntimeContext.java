@@ -2,7 +2,7 @@ package com.didiglobal.turbo.engine.common;
 
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.model.FlowElement;
-import com.didiglobal.turbo.engine.model.InstanceData;
+import com.didiglobal.turbo.engine.model.InstanceDataModel;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ public class RuntimeContext {
 
     //2.3 data info
     private String instanceDataId;
-    private Map<String, InstanceData> instanceDataMap;
+    private Map<String, InstanceDataModel> instanceDataMap;
 
     //2.4 process status
     private int processStatus;
@@ -129,11 +129,11 @@ public class RuntimeContext {
         this.instanceDataId = instanceDataId;
     }
 
-    public Map<String, InstanceData> getInstanceDataMap() {
+    public Map<String, InstanceDataModel> getInstanceDataMap() {
         return instanceDataMap;
     }
 
-    public void setInstanceDataMap(Map<String, InstanceData> instanceDataMap) {
+    public void setInstanceDataMap(Map<String, InstanceDataModel> instanceDataMap) {
         this.instanceDataMap = instanceDataMap;
     }
 
