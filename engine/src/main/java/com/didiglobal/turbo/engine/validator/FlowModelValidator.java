@@ -8,12 +8,12 @@ import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.FlowModel;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
-import com.google.common.collect.Maps;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -33,7 +33,7 @@ public class FlowModelValidator {
         }
 
         List<FlowElement> flowElementList = flowModel.getFlowElementList();
-        Map<String, FlowElement> flowElementMap = Maps.newHashMap();
+        Map<String, FlowElement> flowElementMap = new HashMap<>();
 
         for(FlowElement flowElement : flowElementList) {
             if (flowElementMap.containsKey(flowElement.getKey())) {

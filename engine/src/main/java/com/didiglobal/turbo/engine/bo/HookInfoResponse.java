@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.bo;
 
-import com.google.common.base.MoreObjects;
 import java.util.Map;
 
 public class HookInfoResponse {
@@ -41,13 +40,4 @@ public class HookInfoResponse {
         this.data = data;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("status", status)
-                .add("error", error)
-                .add("detailMessage", detailMessage)
-                .add("data", data)
-                .toString();
-    }
 }

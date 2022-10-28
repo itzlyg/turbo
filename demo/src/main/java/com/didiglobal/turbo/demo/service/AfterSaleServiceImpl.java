@@ -66,6 +66,7 @@ public class AfterSaleServiceImpl {
     }
 
     private void createFlow() {
+
         createFlowParam = new CreateFlowParam(Constant.tenant, Constant.caller);
         createFlowParam.setFlowKey("after_sale");
         createFlowParam.setFlowName("售后处理SOP");
@@ -91,10 +92,15 @@ public class AfterSaleServiceImpl {
     }
 
     private void startProcessToEnd() {
+        //  拉起售后 sop 动作
         StartProcessResult startProcessResult = startProcess();
-        CommitTaskResult commitTaskResult = chooseUnreleaseOrder(startProcessResult);
+        // 选择未发货的订单
+        CommitTaskResult commitTaskResult = chooseUnreleasedOrder(startProcessResult);
+        // 回退，重新选取订单
         RollbackTaskResult rollbackTaskResult = rollbackToChoose(commitTaskResult);
+        //选取已发货，未收到货 订单
         CommitTaskResult result = chooseReleaseOrder(rollbackTaskResult);
+        // 已完成流程,再次提交订单和状态，此时流程已经结束会报错。
         commitCompleteProcess(result);
     }
 
@@ -112,7 +118,7 @@ public class AfterSaleServiceImpl {
     }
 
     // 选择未发货的订单
-    private CommitTaskResult chooseUnreleaseOrder(StartProcessResult startProcessResult) {
+    private CommitTaskResult chooseUnreleasedOrder(StartProcessResult startProcessResult) {
         CommitTaskParam commitTaskParam = new CommitTaskParam();
         commitTaskParam.setFlowInstanceId(startProcessResult.getFlowInstanceId());
         commitTaskParam.setTaskInstanceId(startProcessResult.getActiveTaskInstance().getNodeInstanceId());
@@ -122,7 +128,7 @@ public class AfterSaleServiceImpl {
         commitTaskParam.setVariables(variables);
 
         CommitTaskResult commitTaskResult = processEngine.commitTask(commitTaskParam);
-        LOGGER.info("chooseUnrelesseOrder.||commitTaskResult={}", commitTaskResult);
+        LOGGER.info("chooseUnreleasedOrder.||commitTaskResult={}", commitTaskResult);
         return commitTaskResult;
     }
 

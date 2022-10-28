@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.param;
 
-import com.google.common.base.MoreObjects;
-
 public class UpdateFlowParam extends OperationParam {
     private String flowKey;
     private String flowName;
@@ -51,19 +49,5 @@ public class UpdateFlowParam extends OperationParam {
 
     public void setRemark(String remark) {
         this.remark = remark;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("tenant", getTenant())
-                .add("caller", getCaller())
-                .add("operator", getOperator())
-                .add("flowKey", flowKey)
-                .add("flowName", flowName)
-                .add("flowModuleId", flowModuleId)
-                .add("flowModel", flowModel)
-                .add("remark", remark)
-                .toString();
     }
 }

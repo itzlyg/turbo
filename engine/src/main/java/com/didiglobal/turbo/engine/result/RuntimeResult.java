@@ -3,7 +3,6 @@ package com.didiglobal.turbo.engine.result;
 import com.didiglobal.turbo.engine.bo.NodeInstance;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
 import com.didiglobal.turbo.engine.model.InstanceData;
-import com.google.common.base.MoreObjects;
 import java.util.List;
 
 public class RuntimeResult extends CommonResult {
@@ -52,15 +51,4 @@ public class RuntimeResult extends CommonResult {
         this.variables = variables;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("errCode", getErrCode())
-                .add("errMsg", getErrMsg())
-                .add("flowInstanceId", flowInstanceId)
-                .add("status", status)
-                .add("activeTaskInstance", activeTaskInstance)
-                .add("variables", variables)
-                .toString();
-    }
 }

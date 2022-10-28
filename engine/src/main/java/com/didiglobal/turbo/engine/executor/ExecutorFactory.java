@@ -2,11 +2,12 @@ package com.didiglobal.turbo.engine.executor;
 
 import com.didiglobal.turbo.engine.common.Constants;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.didiglobal.turbo.engine.common.FlowElementType;
+import com.didiglobal.turbo.engine.common.FlowElementTypeEnum;
 import com.didiglobal.turbo.engine.exception.ProcessException;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import java.text.MessageFormat;
+import java.util.Map;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,25 +19,11 @@ public class ExecutorFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(ExecutorFactory.class);
 
     @Resource
-    private StartEventExecutor startEventExecutor;
-
-    @Resource
-    private EndEventExecutor endEventExecutor;
-
-    @Resource
-    private SequenceFlowExecutor sequenceFlowExecutor;
-
-    @Resource
-    private UserTaskExecutor userTaskExecutor;
-
-    @Resource
-    private ExclusiveGatewayExecutor exclusiveGatewayExecutor;
-
+    private Map<String, ElementExecutor> elementExecutor;
 
     public ElementExecutor getElementExecutor(FlowElement flowElement) throws ProcessException {
         int elementType = flowElement.getType();
         ElementExecutor elementExecutor = getElementExecutor(elementType);
-
         if (elementExecutor == null) {
             LOGGER.warn("getElementExecutor failed: unsupported elementType.|elementType={}", elementType);
             throw new ProcessException(ErrorEnum.UNSUPPORTED_ELEMENT_TYPE,
@@ -48,13 +35,10 @@ public class ExecutorFactory {
     }
 
     private ElementExecutor getElementExecutor(int elementType) {
-        switch (elementType) {
-            case FlowElementType.START_EVENT: return startEventExecutor;
-            case FlowElementType.END_EVENT: return endEventExecutor;
-            case FlowElementType.SEQUENCE_FLOW: return sequenceFlowExecutor;
-            case FlowElementType.USER_TASK: return userTaskExecutor;
-            case FlowElementType.EXCLUSIVE_GATEWAY: return exclusiveGatewayExecutor;
-            default: return null;
+        FlowElementTypeEnum elementTypeEnum = FlowElementTypeEnum.byCode(elementType);
+        if (elementTypeEnum != null) {
+            return elementExecutor.get(elementTypeEnum.getName());
         }
+        return null;
     }
 }

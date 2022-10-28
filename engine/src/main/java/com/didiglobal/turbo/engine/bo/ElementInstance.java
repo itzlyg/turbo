@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.bo;
 
-import com.google.common.base.MoreObjects;
 import java.util.Map;
 
 public class ElementInstance {
@@ -52,13 +51,4 @@ public class ElementInstance {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("modelKey", modelKey)
-                .add("modelName", modelName)
-                .add("properties", properties)
-                .add("status", status)
-                .toString();
-    }
 }

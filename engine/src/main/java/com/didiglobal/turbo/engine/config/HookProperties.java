@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.config;
 
-import com.google.common.base.MoreObjects;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
@@ -24,13 +23,5 @@ public class HookProperties {
 
     public void setTimeout(Integer timeout) {
         this.timeout = timeout;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("url", url)
-                .add("timeout", timeout)
-                .toString();
     }
 }

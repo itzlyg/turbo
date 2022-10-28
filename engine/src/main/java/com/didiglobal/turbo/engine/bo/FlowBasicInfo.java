@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.bo;
 
-import com.google.common.base.MoreObjects;
-
 public class FlowBasicInfo {
     private String flowDeployId;
     private String flowModuleId;
@@ -40,13 +38,4 @@ public class FlowBasicInfo {
         this.caller = caller;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("flowDeployId", flowDeployId)
-                .add("flowModuleId", flowModuleId)
-                .add("tenant", tenant)
-                .add("caller", caller)
-                .toString();
-    }
 }

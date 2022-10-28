@@ -20,14 +20,14 @@ import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.InstanceData;
 import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -136,7 +136,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         runtimeContext.setInstanceDataId(instanceDataId);
 
-        runtimeContext.setNodeInstanceList(Lists.newArrayList());
+        runtimeContext.setNodeInstanceList(new ArrayList<>());
 
         //set startEvent into suspendNodeInstance as the first node to process
         Map<String, FlowElement> flowElementMap = runtimeContext.getFlowElementMap();
@@ -245,7 +245,7 @@ public class FlowExecutor extends RuntimeExecutor {
         Map<String, InstanceData> instanceDataMap;
         String instanceDataId = nodeInstancePO.getInstanceDataId();
         if (StringUtils.isBlank(instanceDataId)) {
-            instanceDataMap = Maps.newHashMap();
+            instanceDataMap = new HashMap<>();
         } else {
             InstanceDataPO instanceDataPO = instanceDataDAO.select(flowInstanceId, instanceDataId);
             if (instanceDataPO == null) {
@@ -297,7 +297,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         setCurrentFlowModel(runtimeContext);
 
-        runtimeContext.setNodeInstanceList(Lists.newArrayList());
+        runtimeContext.setNodeInstanceList(new ArrayList<>());
     }
 
     private void doCommit(RuntimeContext runtimeContext) throws ProcessException {
@@ -376,7 +376,7 @@ public class FlowExecutor extends RuntimeExecutor {
         String instanceDataId = rollbackNodeInstancePO.getInstanceDataId();
         Map<String, InstanceData> instanceDataMap;
         if (StringUtils.isBlank(instanceDataId)) {
-            instanceDataMap = Maps.newHashMap();
+            instanceDataMap = new HashMap<>();
         } else {
             InstanceDataPO instanceDataPO = instanceDataDAO.select(flowInstanceId, instanceDataId);
             if (instanceDataPO == null) {
@@ -469,7 +469,7 @@ public class FlowExecutor extends RuntimeExecutor {
                                      Map<String, InstanceData> instanceDataMap) throws ProcessException {
         runtimeContext.setInstanceDataId(nodeInstancePO.getInstanceDataId());
         runtimeContext.setInstanceDataMap(instanceDataMap);
-        runtimeContext.setNodeInstanceList(Lists.newArrayList());
+        runtimeContext.setNodeInstanceList(new ArrayList<>());
         NodeInstanceBO suspendNodeInstanceBO = buildSuspendNodeInstanceBO(nodeInstancePO);
         runtimeContext.setSuspendNodeInstance(suspendNodeInstanceBO);
         setCurrentFlowModel(runtimeContext);
@@ -542,7 +542,7 @@ public class FlowExecutor extends RuntimeExecutor {
         if (isCompleted(runtimeContext)) {
             return null;
         }
-        return executorFactory.getElementExecutor(runtimeContext.getCurrentNodeModel());
+        return getElementExecutor(runtimeContext.getCurrentNodeModel());
     }
 
     ////////////////////////////////////////common////////////////////////////////////////
@@ -557,8 +557,8 @@ public class FlowExecutor extends RuntimeExecutor {
             return;
         }
 
-        List<NodeInstancePO> nodeInstancePOList = Lists.newArrayList();
-        List<NodeInstanceLogPO> nodeInstanceLogPOList = Lists.newArrayList();
+        List<NodeInstancePO> nodeInstancePOList = new ArrayList<>();
+        List<NodeInstanceLogPO> nodeInstanceLogPOList = new ArrayList<>();
 
         processNodeList.forEach(nodeInstanceBO -> {
             NodeInstancePO nodeInstancePO = buildNodeInstancePO(runtimeContext, nodeInstanceBO);

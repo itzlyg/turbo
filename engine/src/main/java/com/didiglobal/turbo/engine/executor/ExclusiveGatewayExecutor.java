@@ -15,12 +15,12 @@ import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.HttpUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import com.didiglobal.turbo.engine.util.JsonUtil;
-import com.google.common.collect.Maps;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -76,7 +76,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         String hookUrl = hookProperties.getUrl();
         if (StringUtils.isBlank(hookUrl)) {
             LOGGER.info("getHookInfoValueMap: cannot find hookConfig.||flowInstanceId={}", flowInstanceId);
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
 
         Integer timeout = hookProperties.getTimeout();
@@ -85,7 +85,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         }
 
         //build request and http post
-        Map<String, Object> hookParamMap = Maps.newHashMap();
+        Map<String, Object> hookParamMap = new HashMap<>();
         hookParamMap.put("flowInstanceId", flowInstanceId);
         hookParamMap.put("hookInfoParam", hookInfoParam);
 
@@ -95,21 +95,21 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         if (hookInfoResponse == null || hookInfoResponse.getStatus() != 0) {
             LOGGER.warn("getHookInfoValueMap failed: hookInfoResponse is null." +
                     "||hookUrl={}||hookParamMap={}||responseStr={}", hookUrl, hookParamMap, responseStr);
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
 
         Map<String, Object> data = hookInfoResponse.getData();
         if (MapUtils.isEmpty(data)) {
             LOGGER.warn("getHookInfoValueMap failed: data is empty.||hookUrl={}||hookParamMap={}||responseStr={}",
                     hookUrl, hookParamMap, responseStr);
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
 
         String respFlowInstanceId = (String) data.get(PARAM_FLOW_INSTANCE_ID);
         if (!flowInstanceId.equals(respFlowInstanceId)) {
             LOGGER.warn("getHookInfoValueMap failed: flowInstanceId is not match." +
                     "||hookUrl={}||hookParamMap={}||responseStr={}", hookUrl, hookParamMap, responseStr);
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
 
         }
 
@@ -158,6 +158,6 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
                 runtimeContext.getFlowElementMap(), runtimeContext.getInstanceDataMap());
 
         runtimeContext.setCurrentNodeModel(nextNode);
-        return executorFactory.getElementExecutor(nextNode);
+        return getElementExecutor(nextNode);
     }
 }

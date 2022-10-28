@@ -1,7 +1,6 @@
 package com.didiglobal.turbo.engine.result;
 
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.google.common.base.MoreObjects;
 
 public class CommonResult {
 
@@ -33,11 +32,4 @@ public class CommonResult {
         this.errMsg = errMsg;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("errCode", errCode)
-                .add("errMsg", errMsg)
-                .toString();
-    }
 }

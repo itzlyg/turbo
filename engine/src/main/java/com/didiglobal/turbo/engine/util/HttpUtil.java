@@ -1,8 +1,6 @@
 package com.didiglobal.turbo.engine.util;
 
-import com.google.common.base.Stopwatch;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.config.RequestConfig;
@@ -30,7 +28,6 @@ public class HttpUtil {
         int code = -1;
         String reStr = "";
         try {
-            Stopwatch stopwatch = Stopwatch.createStarted();
 
             httpclient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost(url);
@@ -44,7 +41,6 @@ public class HttpUtil {
             httpPost.setConfig(requestConfig);
 
             httpResponse = httpclient.execute(httpPost);
-            costTime = stopwatch.elapsed(TimeUnit.MILLISECONDS);
 
             code = httpResponse.getStatusLine().getStatusCode();  // 是int,没有拆箱
             HttpEntity entity = httpResponse.getEntity();

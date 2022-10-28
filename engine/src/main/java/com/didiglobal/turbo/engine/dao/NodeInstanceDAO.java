@@ -3,10 +3,10 @@ package com.didiglobal.turbo.engine.dao;
 import com.didiglobal.turbo.engine.common.NodeInstanceStatus;
 import com.didiglobal.turbo.engine.dao.mapper.NodeInstanceMapper;
 import com.didiglobal.turbo.engine.entity.NodeInstancePO;
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,7 +41,7 @@ public class NodeInstanceDAO extends BaseDAO<NodeInstanceMapper, NodeInstancePO>
             return true;
         }
 
-        List<NodeInstancePO> insertNodeInstanceList = Lists.newArrayList();
+        List<NodeInstancePO> insertNodeInstanceList = new ArrayList<>();
         nodeInstanceList.forEach(nodeInstancePO -> {
             if (nodeInstancePO.getId() == null) {
                 insertNodeInstanceList.add(nodeInstancePO);

@@ -1,6 +1,5 @@
 package com.didiglobal.turbo.engine.model;
 
-import com.google.common.base.MoreObjects;
 import java.util.List;
 import java.util.Map;
 
@@ -49,16 +48,5 @@ public class FlowElement {
 
     public void setIncoming(List<String> incoming) {
         this.incoming = incoming;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("key", key)
-                .add("type", type)
-                .add("outgoing", outgoing)
-                .add("properties", properties)
-                .add("incoming", incoming)
-                .toString();
     }
 }

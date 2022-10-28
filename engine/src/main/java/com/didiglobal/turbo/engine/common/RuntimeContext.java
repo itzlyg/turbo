@@ -3,7 +3,6 @@ package com.didiglobal.turbo.engine.common;
 import com.didiglobal.turbo.engine.bo.NodeInstanceBO;
 import com.didiglobal.turbo.engine.model.FlowElement;
 import com.didiglobal.turbo.engine.model.InstanceData;
-import com.google.common.base.MoreObjects;
 import java.util.List;
 import java.util.Map;
 
@@ -146,23 +145,4 @@ public class RuntimeContext {
         this.processStatus = processStatus;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("flowDeployId", flowDeployId)
-                .add("flowModuleId", flowModuleId)
-                .add("tenant", tenant)
-                .add("caller", caller)
-                .add("flowElementMap", flowElementMap)
-                .add("flowInstanceId", flowInstanceId)
-                .add("flowInstanceStatus", flowInstanceStatus)
-                .add("suspendNodeInstance", suspendNodeInstance)
-                .add("nodeInstanceList", nodeInstanceList)
-                .add("currentNodeModel", currentNodeModel)
-                .add("currentNodeInstance", currentNodeInstance)
-                .add("instanceDataId", instanceDataId)
-                .add("instanceDataMap", instanceDataMap)
-                .add("processStatus", processStatus)
-                .toString();
-    }
 }

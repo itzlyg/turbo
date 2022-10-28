@@ -2,12 +2,12 @@ package com.didiglobal.turbo.engine.util;
 
 import com.didiglobal.turbo.engine.common.DataType;
 import com.didiglobal.turbo.engine.model.InstanceData;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class InstanceDataUtil {
@@ -16,9 +16,9 @@ public class InstanceDataUtil {
 
     public static Map<String, InstanceData> getInstanceDataMap(List<InstanceData> instanceDataList) {
         if (CollectionUtils.isEmpty(instanceDataList)) {
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
-        Map<String, InstanceData> instanceDataMap = Maps.newHashMap();
+        Map<String, InstanceData> instanceDataMap = new HashMap<>();
         instanceDataList.forEach(instanceData -> {
             instanceDataMap.put(instanceData.getKey(), instanceData);
         });
@@ -27,7 +27,7 @@ public class InstanceDataUtil {
 
     public static Map<String, InstanceData> getInstanceDataMap(String instanceDataStr) {
         if (StringUtils.isBlank(instanceDataStr)) {
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
         List<InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataStr, InstanceData.class);
         return getInstanceDataMap(instanceDataList);
@@ -35,9 +35,9 @@ public class InstanceDataUtil {
 
     public static List<InstanceData> getInstanceDataList(Map<String, InstanceData> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
-            return Lists.newArrayList();
+            return new ArrayList<>();
         }
-        List<InstanceData> instanceDataList = Lists.newArrayList();
+        List<InstanceData> instanceDataList = new ArrayList<>();
         instanceDataMap.forEach((key, instanceData) -> {
             instanceDataList.add(instanceData);
         });
@@ -53,9 +53,9 @@ public class InstanceDataUtil {
 
     public static Map<String, Object> parseInstanceDataMap(Map<String, InstanceData> instanceDataMap) {
         if (MapUtils.isEmpty(instanceDataMap)) {
-            return MapUtils.EMPTY_MAP;
+            return new HashMap<>();
         }
-        Map<String, Object> dataMap = Maps.newHashMap();
+        Map<String, Object> dataMap = new HashMap<>();
         instanceDataMap.forEach((keyName, instanceData) -> {
             dataMap.put(keyName, parseInstanceData(instanceData));
         });

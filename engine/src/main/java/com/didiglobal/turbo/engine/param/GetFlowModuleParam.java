@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.param;
 
-import com.google.common.base.MoreObjects;
-
 public class GetFlowModuleParam {
     private String flowModuleId;
     private String flowDeployId;
@@ -22,11 +20,4 @@ public class GetFlowModuleParam {
         this.flowDeployId = flowDeployId;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("flowModuleId", flowModuleId)
-                .add("flowDeployId", flowDeployId)
-                .toString();
-    }
 }

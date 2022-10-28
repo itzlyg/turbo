@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.result;
 
-import com.google.common.base.MoreObjects;
-
 public class DeployFlowResult extends CommonResult {
     private String flowModuleId;
     private String flowDeployId;
@@ -20,15 +18,5 @@ public class DeployFlowResult extends CommonResult {
 
     public void setFlowDeployId(String flowDeployId) {
         this.flowDeployId = flowDeployId;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("errCode", getErrCode())
-                .add("errMsg", getErrMsg())
-                .add("flowModuleId", flowModuleId)
-                .add("flowDeployId", flowDeployId)
-                .toString();
     }
 }

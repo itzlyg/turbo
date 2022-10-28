@@ -1,12 +1,13 @@
 package com.didiglobal.turbo.engine.model;
 
-import com.google.common.base.MoreObjects;
-
 public class InstanceData {
     private String key;
     private String type;
     private Object value;
 
+    public InstanceData(){
+
+    }
     public InstanceData(String key, Object value) {
         this.key = key;
         this.value = value;
@@ -40,14 +41,5 @@ public class InstanceData {
 
     public void setValue(Object value) {
         this.value = value;
-    }
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("key", key)
-                .add("type", type)
-                .add("value", value)
-                .toString();
     }
 }

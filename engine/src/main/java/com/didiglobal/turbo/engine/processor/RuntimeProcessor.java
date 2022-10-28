@@ -41,13 +41,13 @@ import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import com.didiglobal.turbo.engine.util.JsonUtil;
 import com.didiglobal.turbo.engine.validator.ParamValidator;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -313,7 +313,7 @@ public class RuntimeProcessor {
 
         //2.init result
         NodeInstanceListResult historyListResult = new NodeInstanceListResult(ErrorEnum.SUCCESS);
-        historyListResult.setNodeInstanceList(Lists.newArrayList());
+        historyListResult.setNodeInstanceList(new ArrayList<>());
 
         try {
 
@@ -352,7 +352,7 @@ public class RuntimeProcessor {
                 if (MapUtils.isNotEmpty(flowElement.getProperties())) {
                     nodeInstance.setProperties(flowElement.getProperties());
                 } else {
-                    nodeInstance.setProperties(Maps.newHashMap());
+                    nodeInstance.setProperties(new HashMap<>());
                 }
                 userTaskList.add(nodeInstance);
             }
@@ -391,7 +391,7 @@ public class RuntimeProcessor {
 
         //2.init
         ElementInstanceListResult elementInstanceListResult = new ElementInstanceListResult(ErrorEnum.SUCCESS);
-        elementInstanceListResult.setElementInstanceList(Lists.newArrayList());
+        elementInstanceListResult.setElementInstanceList(new ArrayList<>());
 
         try {
             if (CollectionUtils.isEmpty(historyNodeInstanceList)) {
@@ -461,7 +461,7 @@ public class RuntimeProcessor {
             if (MapUtils.isNotEmpty(flowElement.getProperties())) {
                 nodeInstance.setProperties(flowElement.getProperties());
             } else {
-                nodeInstance.setProperties(Maps.newHashMap());
+                nodeInstance.setProperties(new HashMap<>());
             }
             nodeInstanceResult.setNodeInstance(nodeInstance);
             nodeInstanceResult.setErrCode(ErrorEnum.SUCCESS.getErrNo());
@@ -479,7 +479,7 @@ public class RuntimeProcessor {
 
         List<InstanceData> instanceDataList = JsonUtil.toBeans(instanceDataPO.getInstanceData(), InstanceData.class);
         if (CollectionUtils.isEmpty(instanceDataList)) {
-            instanceDataList =  Lists.newArrayList();
+            instanceDataList =  new ArrayList<>();
         }
 
         InstanceDataListResult instanceDataListResult = new InstanceDataListResult(ErrorEnum.SUCCESS);

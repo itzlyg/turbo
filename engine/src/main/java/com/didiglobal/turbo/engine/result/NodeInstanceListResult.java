@@ -2,7 +2,6 @@ package com.didiglobal.turbo.engine.result;
 
 import com.didiglobal.turbo.engine.bo.NodeInstance;
 import com.didiglobal.turbo.engine.common.ErrorEnum;
-import com.google.common.base.MoreObjects;
 import java.util.List;
 
 public class NodeInstanceListResult extends CommonResult {
@@ -20,12 +19,4 @@ public class NodeInstanceListResult extends CommonResult {
         this.nodeInstanceList = nodeInstanceList;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("errCode", getErrCode())
-                .add("errMsg", getErrMsg())
-                .add("nodeInstanceList", nodeInstanceList)
-                .toString();
-    }
 }

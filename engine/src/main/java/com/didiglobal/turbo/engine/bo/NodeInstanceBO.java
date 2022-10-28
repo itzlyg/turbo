@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.bo;
 
-import com.google.common.base.MoreObjects;
-
 public class NodeInstanceBO {
     //used while updateById
     private Long id;
@@ -68,16 +66,4 @@ public class NodeInstanceBO {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("nodeInstanceId", nodeInstanceId)
-                .add("nodeKey", nodeKey)
-                .add("sourceNodeInstanceId", sourceNodeInstanceId)
-                .add("sourceNodeKey", sourceNodeKey)
-                .add("instanceDataId", instanceDataId)
-                .add("status", status)
-                .toString();
-    }
 }

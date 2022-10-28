@@ -1,7 +1,5 @@
 package com.didiglobal.turbo.engine.bo;
 
-import com.google.common.base.MoreObjects;
-
 public class FlowInstanceBO {
     private String flowInstanceId;
     private String flowDeployId;
@@ -31,12 +29,4 @@ public class FlowInstanceBO {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("flowInstanceId", flowInstanceId)
-                .add("flowDeployId", flowDeployId)
-                .add("status", status)
-                .toString();
-    }
 }

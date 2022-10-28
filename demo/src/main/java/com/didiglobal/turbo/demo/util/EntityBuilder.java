@@ -9,7 +9,6 @@ import com.didiglobal.turbo.engine.model.SequenceFlow;
 import com.didiglobal.turbo.engine.model.StartEvent;
 import com.didiglobal.turbo.engine.model.UserTask;
 import com.didiglobal.turbo.engine.util.JsonUtil;
-import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,7 +49,7 @@ public class EntityBuilder {
     }
 
     private static Object buildAfterSaleFlowModelEntity() {
-        List<FlowElement> flowElementList = Lists.newArrayList();
+        List<FlowElement> flowElementList = new ArrayList<>();
         //开始节点
         StartEvent startNode = new StartEvent();
         startNode.setKey("StartEvent_0ofi5hg");
@@ -265,7 +264,7 @@ public class EntityBuilder {
     }
 
     public static FlowModel buildLeaveFlowModelEntity() {
-        List<FlowElement> flowElementList = Lists.newArrayList();
+        List<FlowElement> flowElementList = new ArrayList<>();
 
         //开始节点
         StartEvent startEvent = new StartEvent();

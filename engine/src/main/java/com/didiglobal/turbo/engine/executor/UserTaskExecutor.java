@@ -149,6 +149,6 @@ public class UserTaskExecutor extends ElementExecutor {
 
         runtimeContext.setCurrentNodeModel(nextNode);
 
-        return executorFactory.getElementExecutor(nextNode);
+        return getElementExecutor(nextNode);
     }
 }

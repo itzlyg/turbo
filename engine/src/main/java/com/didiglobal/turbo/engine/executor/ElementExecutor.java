@@ -94,7 +94,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         Map<String, FlowElement> flowElementMap = runtimeContext.getFlowElementMap();
         FlowElement flowElement = getUniqueNextNode(runtimeContext.getCurrentNodeModel(), flowElementMap);
         runtimeContext.setCurrentNodeModel(flowElement);
-        return executorFactory.getElementExecutor(flowElement);
+        return getElementExecutor(flowElement);
     }
 
     @Override
@@ -240,7 +240,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
 
         // TODO: 2019/12/18
         runtimeContext.setCurrentNodeModel(sourceNode);
-        return executorFactory.getElementExecutor(sourceNode);
+        return getElementExecutor(sourceNode);
     }
 
     @Override
