@@ -15,6 +15,7 @@ import com.didiglobal.turbo.engine.util.FlowModelUtil;
 import com.didiglobal.turbo.engine.util.HttpUtil;
 import com.didiglobal.turbo.engine.util.InstanceDataUtil;
 import com.didiglobal.turbo.engine.util.JsonUtil;
+import java.net.URISyntaxException;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -90,26 +91,29 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         hookParamMap.put("flowInstanceId", flowInstanceId);
         hookParamMap.put("hookInfoParam", hookInfoParam);
 
-        String responseStr = HttpUtil.postJson(HOOK_URL_NAME, hookUrl, JsonUtil.toJson(hookParamMap), timeout);
-        HookInfoResponseBO hookInfoResponse = JsonUtil.toBean(responseStr, HookInfoResponseBO.class);
-
+        HookInfoResponseBO hookInfoResponse = null;
+        try {
+            hookInfoResponse = HttpUtil.postJson(hookUrl, hookParamMap, HookInfoResponseBO.class);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
         if (hookInfoResponse == null || hookInfoResponse.getStatus() != 0) {
             LOGGER.warn("getHookInfoValueMap failed: hookInfoResponse is null." +
-                    "||hookUrl={}||hookParamMap={}||responseStr={}", hookUrl, hookParamMap, responseStr);
+                    "||hookUrl={}||hookParamMap={}", hookUrl, hookParamMap);
             return new HashMap<>();
         }
 
         Map<String, Object> data = hookInfoResponse.getData();
         if (MapUtils.isEmpty(data)) {
-            LOGGER.warn("getHookInfoValueMap failed: data is empty.||hookUrl={}||hookParamMap={}||responseStr={}",
-                    hookUrl, hookParamMap, responseStr);
+            LOGGER.warn("getHookInfoValueMap failed: data is empty.||hookUrl={}||hookParamMap={}",
+                    hookUrl, hookParamMap);
             return new HashMap<>();
         }
 
         String respFlowInstanceId = (String) data.get(PARAM_FLOW_INSTANCE_ID);
         if (!flowInstanceId.equals(respFlowInstanceId)) {
             LOGGER.warn("getHookInfoValueMap failed: flowInstanceId is not match." +
-                    "||hookUrl={}||hookParamMap={}||responseStr={}", hookUrl, hookParamMap, responseStr);
+                    "||hookUrl={}||hookParamMap={}", hookUrl, hookParamMap);
             return new HashMap<>();
 
         }

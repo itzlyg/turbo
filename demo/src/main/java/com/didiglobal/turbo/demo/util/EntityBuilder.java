@@ -84,7 +84,9 @@ public class EntityBuilder {
         egOutgoings.add("SequenceFlow_168uou4");
         exclusiveGateway.setOutgoing(egOutgoings);
         Map<String, Object> properties = new HashMap<>();
-        properties.put("hookInfoIds", "");
+        // 设置动态获取配置的 通过http的方式
+
+        properties.put("hookInfoIds", "orderStatus,carStatus,personStatus");
         exclusiveGateway.setProperties(properties);
         flowElementList.add(exclusiveGateway);
 

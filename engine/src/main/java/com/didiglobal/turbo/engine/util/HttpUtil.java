@@ -1,67 +1,41 @@
 package com.didiglobal.turbo.engine.util;
 
-import java.io.IOException;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.ContentType;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
 
 public class HttpUtil {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtil.class);
+    private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
+
+    private static final RestTemplate rest = new RestTemplate();
 
     private HttpUtil() {}
 
-    public static String postJson(String urlName, String url, String body, int timeout) {
-        Long costTime = 0L;
-
-        CloseableHttpClient httpclient = null;
-        CloseableHttpResponse httpResponse = null;
-        int code = -1;
-        String reStr = "";
+    /**
+     * POST 请求
+     * @Description
+     * @param url 地址
+     * @param params 参数
+     * @param clazz 返参类型
+     * @return 返回值
+     * @throws Exception
+     */
+    public static <T> T postJson (String url, @Nullable Object params, Class<T> clazz) throws URISyntaxException {
+        assert params != null;
+        log.info("开始post请求，请求地址{}，请求参数{}，返回参数类型{}", url, params, clazz.getName());
+        URI uri;
+        T t;
         try {
-
-            httpclient = HttpClients.createDefault();
-            HttpPost httpPost = new HttpPost(url);
-
-            body = StringUtils.trimToEmpty(body);
-            HttpEntity jsonEntity = new ByteArrayEntity(body.getBytes("UTF-8"), ContentType.APPLICATION_JSON);
-            httpPost.setEntity(jsonEntity);
-
-            RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(timeout)
-                    .setConnectTimeout(timeout).setSocketTimeout(timeout).build();
-            httpPost.setConfig(requestConfig);
-
-            httpResponse = httpclient.execute(httpPost);
-
-            code = httpResponse.getStatusLine().getStatusCode();  // 是int,没有拆箱
-            HttpEntity entity = httpResponse.getEntity();
-            reStr = EntityUtils.toString(entity); // reStr只有body,没有status
-            return reStr;
-        } catch (IOException e) {
-            LOGGER.error("postJson IOException.||urlName={}||url={}||body={}, ", urlName, url, body, e);
-            return StringUtils.EMPTY;
-        } finally {
-            try {
-                if (httpclient != null) {
-                    httpclient.close();
-                }
-                if (httpResponse != null) {
-                    httpResponse.close();
-                }
-            } catch (IOException e) {
-                LOGGER.error("postJson exception.||url={}, ", url, e);
-            }
-            LOGGER.info("postJson.||urlName={}||url={}||body={}||code={}||reStr={}||costTime={}",
-                    urlName, url, body, code, reStr, costTime);
+            uri = new URI(url);
+            t = rest.postForObject(uri, params, clazz);
+        } catch (Exception e) {
+            log.error("post请求异常，{}", e.getMessage());
+            throw e;
         }
+        return t;
     }
 }

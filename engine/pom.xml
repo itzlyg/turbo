@@ -11,11 +11,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.1</version>
+        <version>2.7.5</version>
         <relativePath/>
     </parent>
     <properties>
-        <spring-boot-starter.version>2.7.1</spring-boot-starter.version>
+        <spring-boot-starter.version>2.7.5</spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -31,7 +31,7 @@
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
             <version>${spring-boot-starter.version}</version>
         </dependency>
         <dependency>
@@ -59,47 +59,14 @@
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
+            <artifactId>groovy</artifactId>
             <version>3.0.13</version>
-            <type>pom</type>
-            <exclusions>
-                <exclusion>
-                    <artifactId>groovy-test</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>groovy-console</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>groovy-sql</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>groovy-json</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>groovy-swing</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>groovy-test-junit5</artifactId>
-                    <groupId>org.codehaus.groovy</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>
         </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-        </dependency>
-
     </dependencies>
 
 </project>
