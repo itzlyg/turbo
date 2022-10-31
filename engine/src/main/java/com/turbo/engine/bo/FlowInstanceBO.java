@@ -3,7 +3,7 @@ package com.turbo.engine.bo;
 public class FlowInstanceBO {
     private String flowInstanceId;
     private String flowDeployId;
-    private Integer status;
+    private Integer flStatus;
 
     public String getFlowInstanceId() {
         return flowInstanceId;
@@ -21,12 +21,11 @@ public class FlowInstanceBO {
         this.flowDeployId = flowDeployId;
     }
 
-    public Integer getStatus() {
-        return status;
+    public Integer getFlStatus() {
+        return flStatus;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setFlStatus(Integer flStatus) {
+        this.flStatus = flStatus;
     }
-
 }

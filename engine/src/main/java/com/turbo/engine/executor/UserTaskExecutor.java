@@ -20,13 +20,13 @@ public class UserTaskExecutor extends ElementExecutor {
     @Override
     protected void doExecute(RuntimeContext runtimeContext) throws ProcessException {
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
-        if (currentNodeInstance.getStatus() == NodeInstanceStatus.COMPLETED) {
+        if (currentNodeInstance.getFlStatus() == NodeInstanceStatus.COMPLETED) {
             LOGGER.warn("doExecute reentrant: currentNodeInstance is completed.||runtimeContext={}", runtimeContext);
             return;
         }
 
-        if (currentNodeInstance.getStatus() != NodeInstanceStatus.ACTIVE) {
-            currentNodeInstance.setStatus(NodeInstanceStatus.ACTIVE);
+        if (currentNodeInstance.getFlStatus() != NodeInstanceStatus.ACTIVE) {
+            currentNodeInstance.setFlStatus(NodeInstanceStatus.ACTIVE);
         }
         runtimeContext.getNodeInstanceList().add(currentNodeInstance);
 
@@ -43,7 +43,7 @@ public class UserTaskExecutor extends ElementExecutor {
         String flowInstanceId = runtimeContext.getFlowInstanceId();
         NodeInstanceBO suspendNodeInstance = runtimeContext.getSuspendNodeInstance();
         String nodeInstanceId = suspendNodeInstance.getNodeInstanceId();
-        int status = suspendNodeInstance.getStatus();
+        int status = suspendNodeInstance.getFlStatus();
         FlowElement flowElement = runtimeContext.getCurrentNodeModel();
         String nodeName = FlowModelUtil.getElementName(flowElement);
         String nodeKey = flowElement.getKey();
@@ -79,8 +79,8 @@ public class UserTaskExecutor extends ElementExecutor {
     @Override
     protected void postCommit(RuntimeContext runtimeContext) {
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
-        if (currentNodeInstance.getStatus() != NodeInstanceStatus.COMPLETED) {
-            currentNodeInstance.setStatus(NodeInstanceStatus.COMPLETED);
+        if (currentNodeInstance.getFlStatus() != NodeInstanceStatus.COMPLETED) {
+            currentNodeInstance.setFlStatus(NodeInstanceStatus.COMPLETED);
             runtimeContext.getNodeInstanceList().add(currentNodeInstance);
         }
     }
@@ -95,8 +95,8 @@ public class UserTaskExecutor extends ElementExecutor {
     protected void doRollback(RuntimeContext runtimeContext) throws ProcessException {
 
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
-        int currentStatus = currentNodeInstance.getStatus();
-        currentNodeInstance.setStatus(NodeInstanceStatus.DISABLED);
+        int currentStatus = currentNodeInstance.getFlStatus();
+        currentNodeInstance.setFlStatus(NodeInstanceStatus.DISABLED);
         runtimeContext.getNodeInstanceList().add(currentNodeInstance);
         if (currentStatus == NodeInstanceStatus.COMPLETED) {
             NodeInstanceBO newNodeInstanceBO = new NodeInstanceBO();
@@ -105,7 +105,7 @@ public class UserTaskExecutor extends ElementExecutor {
             newNodeInstanceBO.setId(null);
             String newNodeInstanceId = genId();
             newNodeInstanceBO.setNodeInstanceId(newNodeInstanceId);
-            newNodeInstanceBO.setStatus(NodeInstanceStatus.ACTIVE);
+            newNodeInstanceBO.setFlStatus(NodeInstanceStatus.ACTIVE);
             runtimeContext.setCurrentNodeInstance(newNodeInstanceBO);
             runtimeContext.getNodeInstanceList().add(newNodeInstanceBO);
             throw new SuspendException(ErrorEnum.ROLLBACK_SUSPEND, MessageFormat.format(Constants.NODE_INSTANCE_FORMAT,

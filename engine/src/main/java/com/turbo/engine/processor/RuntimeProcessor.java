@@ -140,17 +140,13 @@ public class RuntimeProcessor {
 
             //2.get flowInstance
             FlowInstanceBO flowInstanceBO = getFlowInstanceBO(commitTaskParam.getFlowInstanceId());
-            if (flowInstanceBO == null) {
-                LOGGER.warn("commit failed: cannot find flowInstanceBO.||flowInstanceId={}", commitTaskParam.getFlowInstanceId());
-                throw new ProcessException(ErrorEnum.GET_FLOW_INSTANCE_FAILED);
-            }
 
             //3.check status
-            if (flowInstanceBO.getStatus() == FlowInstanceStatus.TERMINATED) {
+            if (flowInstanceBO.getFlStatus() == FlowInstanceStatus.TERMINATED) {
                 LOGGER.warn("commit failed: flowInstance has been completed.||commitTaskParam={}", commitTaskParam);
                 throw new ProcessException(ErrorEnum.COMMIT_REJECTRD);
             }
-            if (flowInstanceBO.getStatus() == FlowInstanceStatus.COMPLETED) {
+            if (flowInstanceBO.getFlStatus() == FlowInstanceStatus.COMPLETED) {
                 LOGGER.warn("commit: reentrant process.||commitTaskParam={}", commitTaskParam);
                 throw new ReentrantException(ErrorEnum.REENTRANT_WARNING);
             }
@@ -160,7 +156,7 @@ public class RuntimeProcessor {
             FlowInfoBO flowInfo = getFlowInfoByFlowDeployId(flowDeployId);
 
             //5.init runtimeContext
-            runtimeContext = buildCommitContext(commitTaskParam, flowInfo, flowInstanceBO.getStatus());
+            runtimeContext = buildCommitContext(commitTaskParam, flowInfo, flowInstanceBO.getFlStatus());
 
             //6.process
             flowExecutor.commit(runtimeContext);
@@ -218,15 +214,10 @@ public class RuntimeProcessor {
 
             //2.get flowInstance
             FlowInstanceBO flowInstanceBO = getFlowInstanceBO(rollbackTaskParam.getFlowInstanceId());
-            if (flowInstanceBO == null) {
-                LOGGER.warn("rollback failed: flowInstanceBO is null.||flowInstanceId={}", rollbackTaskParam.getFlowInstanceId());
-                throw new ProcessException(ErrorEnum.GET_FLOW_INSTANCE_FAILED);
-            }
-
             //3.check status
-            if (flowInstanceBO.getStatus() != FlowInstanceStatus.RUNNING) {
+            if (flowInstanceBO.getFlStatus() != FlowInstanceStatus.RUNNING) {
                 LOGGER.warn("rollback failed: invalid status to rollback.||rollbackTaskParam={}||status={}",
-                        rollbackTaskParam, flowInstanceBO.getStatus());
+                        rollbackTaskParam, flowInstanceBO.getFlStatus());
                 throw new ProcessException(ErrorEnum.ROLLBACK_REJECTRD);
             }
             String flowDeployId = flowInstanceBO.getFlowDeployId();
@@ -235,7 +226,7 @@ public class RuntimeProcessor {
             FlowInfoBO flowInfo = getFlowInfoByFlowDeployId(flowDeployId);
 
             //5.init runtimeContext
-            runtimeContext = buildRollbackContext(rollbackTaskParam, flowInfo, flowInstanceBO.getStatus());
+            runtimeContext = buildRollbackContext(rollbackTaskParam, flowInfo, flowInstanceBO.getFlStatus());
 
             //6.process
             flowExecutor.rollback(runtimeContext);
@@ -284,7 +275,7 @@ public class RuntimeProcessor {
             int flowInstanceStatus;
 
             FlowInstance flowInstancePO = flowInstanceService.selectByFlowInstanceId(flowInstanceId);
-            if (flowInstancePO.getStatus() == FlowInstanceStatus.COMPLETED) {
+            if (flowInstancePO.getFlStatus() == FlowInstanceStatus.COMPLETED) {
                 LOGGER.warn("terminateProcess: flowInstance is completed.||flowInstanceId={}", flowInstanceId);
                 flowInstanceStatus = FlowInstanceStatus.COMPLETED;
             } else {
@@ -330,7 +321,7 @@ public class RuntimeProcessor {
 
             for (NodeInstance nodeInstancePO : historyNodeInstanceList) {
                 //ignore noneffective nodeInstance
-                if (!isEffectiveNodeInstance(nodeInstancePO.getStatus())) {
+                if (!isEffectiveNodeInstance(nodeInstancePO.getFlStatus())) {
                     continue;
                 }
 
@@ -407,7 +398,7 @@ public class RuntimeProcessor {
             for (NodeInstance nodeInstancePO : historyNodeInstanceList) {
                 String nodeKey = nodeInstancePO.getNodeKey();
                 String sourceNodeKey = nodeInstancePO.getSourceNodeKey();
-                int nodeStatus = nodeInstancePO.getStatus();
+                int nodeStatus = nodeInstancePO.getFlStatus();
 
                 //4.1 build the source sequenceFlow instance
                 if (StringUtils.isNotBlank(sourceNodeKey)) {

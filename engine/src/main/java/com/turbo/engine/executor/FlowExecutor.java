@@ -92,9 +92,9 @@ public class FlowExecutor extends RuntimeExecutor {
         BeanUtils.copyProperties(runtimeContext, flowInstancePO);
         // generate flowInstanceId
         flowInstancePO.setFlowInstanceId(genId());
-        flowInstancePO.setStatus(FlowInstanceStatus.RUNNING);
-        flowInstancePO.setCreateTime(LocalDateTime.now());
-        flowInstancePO.setModifyTime(LocalDateTime.now());
+        flowInstancePO.setFlStatus(FlowInstanceStatus.RUNNING);
+        flowInstancePO.setCreatedTime(LocalDateTime.now());
+        flowInstancePO.setUpdatedTime(LocalDateTime.now());
         return flowInstancePO;
     }
 
@@ -124,7 +124,7 @@ public class FlowExecutor extends RuntimeExecutor {
 
         instanceDataPO.setNodeInstanceId(StringUtils.EMPTY);
         instanceDataPO.setNodeKey(StringUtils.EMPTY);
-        instanceDataPO.setCreateTime(LocalDateTime.now());
+        instanceDataPO.setCreatedTime(LocalDateTime.now());
         instanceDataPO.setType(InstanceDataType.INIT);
         return instanceDataPO;
     }
@@ -147,7 +147,7 @@ public class FlowExecutor extends RuntimeExecutor {
         }
         NodeInstanceBO suspendNodeInstance = new NodeInstanceBO();
         suspendNodeInstance.setNodeKey(startEvent.getKey());
-        suspendNodeInstance.setStatus(NodeInstanceStatus.ACTIVE);
+        suspendNodeInstance.setFlStatus(NodeInstanceStatus.ACTIVE);
         suspendNodeInstance.setSourceNodeInstanceId(StringUtils.EMPTY);
         suspendNodeInstance.setSourceNodeKey(StringUtils.EMPTY);
         runtimeContext.setSuspendNodeInstance(suspendNodeInstance);
@@ -238,7 +238,7 @@ public class FlowExecutor extends RuntimeExecutor {
             suspendNodeInstance.setSourceNodeInstanceId(nodeInstancePO.getSourceNodeInstanceId());
             suspendNodeInstance.setSourceNodeKey(nodeInstancePO.getSourceNodeKey());
             suspendNodeInstance.setInstanceDataId(nodeInstancePO.getInstanceDataId());
-            suspendNodeInstance.setStatus(nodeInstancePO.getStatus());
+            suspendNodeInstance.setFlStatus(nodeInstancePO.getFlStatus());
             throw new ReentrantException(ErrorEnum.REENTRANT_WARNING);
         }
         Map<String, InstanceDataModel> instanceDataMap;
@@ -278,7 +278,7 @@ public class FlowExecutor extends RuntimeExecutor {
         instanceDataPO.setNodeInstanceId(nodeInstanceId);
         instanceDataPO.setNodeKey(nodeKey);
         instanceDataPO.setType(InstanceDataType.COMMIT);
-        instanceDataPO.setCreateTime(LocalDateTime.now());
+        instanceDataPO.setCreatedTime(LocalDateTime.now());
 
         instanceDataPO.setInstanceDataId(newInstanceDataId);
         instanceDataPO.setInstanceData(InstanceDataUtil.getInstanceDataListStr(instanceDataMap));
@@ -412,7 +412,7 @@ public class FlowExecutor extends RuntimeExecutor {
                 continue;
             }
 
-            if (nodeInstancePO.getStatus() == NodeInstanceStatus.ACTIVE) {
+            if (nodeInstancePO.getFlStatus() == NodeInstanceStatus.ACTIVE) {
                 activeNodeInstancePO = nodeInstancePO;
 
                 if (nodeInstancePO.getNodeInstanceId().equals(suspendNodeInstanceId)) {
@@ -420,7 +420,7 @@ public class FlowExecutor extends RuntimeExecutor {
                             + "||flowInstanceId={}||suspendNodeInstanceId={}", flowInstanceId, suspendNodeInstanceId);
                     return activeNodeInstancePO;
                 }
-            } else if (nodeInstancePO.getStatus() == NodeInstanceStatus.COMPLETED) {
+            } else if (nodeInstancePO.getFlStatus() == NodeInstanceStatus.COMPLETED) {
                 if (nodeInstancePO.getNodeInstanceId().equals(suspendNodeInstanceId)) {
                     LOGGER.info("getActiveUserTaskForRollback: roll back the lasted completed userTask."
                                     + "||flowInstanceId={}||suspendNodeInstanceId={}||activeNodeInstanceId={}",
@@ -433,7 +433,7 @@ public class FlowExecutor extends RuntimeExecutor {
                 return null;
             }
             LOGGER.info("getActiveUserTaskForRollback: ignore disabled userTask instance.||flowInstanceId={}"
-                    + "||suspendNodeInstanceId={}||status={}", flowInstanceId, suspendNodeInstanceId, nodeInstancePO.getStatus());
+                    + "||suspendNodeInstanceId={}||status={}", flowInstanceId, suspendNodeInstanceId, nodeInstancePO.getFlStatus());
 
         }
         LOGGER.warn("getActiveUserTaskForRollback: cannot rollback the suspendNodeInstance."
@@ -484,7 +484,7 @@ public class FlowExecutor extends RuntimeExecutor {
             instanceDataId) {
         suspendNodeInstanceBO.setId(nodeInstancePO.getId());
         suspendNodeInstanceBO.setNodeKey(nodeInstancePO.getNodeKey());
-        suspendNodeInstanceBO.setStatus(nodeInstancePO.getStatus());
+        suspendNodeInstanceBO.setFlStatus(nodeInstancePO.getFlStatus());
         suspendNodeInstanceBO.setSourceNodeInstanceId(nodeInstancePO.getSourceNodeInstanceId());
         suspendNodeInstanceBO.setSourceNodeKey(nodeInstancePO.getSourceNodeKey());
         suspendNodeInstanceBO.setInstanceDataId(instanceDataId);
@@ -514,7 +514,7 @@ public class FlowExecutor extends RuntimeExecutor {
             return false;
         }
 
-        if (suspendNodeInstance.getStatus() != NodeInstanceStatus.COMPLETED) {
+        if (suspendNodeInstance.getFlStatus() != NodeInstanceStatus.COMPLETED) {
             return false;
         }
 
@@ -580,7 +580,7 @@ public class FlowExecutor extends RuntimeExecutor {
                 //keep suspendNodeInstance's status while process failed.
                 return null;
             }
-            nodeInstanceBO.setStatus(NodeInstanceStatus.FAILED);
+            nodeInstanceBO.setFlStatus(NodeInstanceStatus.FAILED);
         }
 
         NodeInstance nodeInstancePO = new NodeInstance();
@@ -589,8 +589,8 @@ public class FlowExecutor extends RuntimeExecutor {
         nodeInstancePO.setFlowDeployId(runtimeContext.getFlowDeployId());
         nodeInstancePO.setTenant(runtimeContext.getTenant());
         nodeInstancePO.setCaller(runtimeContext.getCaller());
-        nodeInstancePO.setCreateTime(LocalDateTime.now());
-        nodeInstancePO.setModifyTime(LocalDateTime.now());
+        nodeInstancePO.setCreatedTime(LocalDateTime.now());
+        nodeInstancePO.setUpdatedTime(LocalDateTime.now());
         return nodeInstancePO;
     }
 

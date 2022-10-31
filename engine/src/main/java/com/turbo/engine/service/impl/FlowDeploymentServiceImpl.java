@@ -8,6 +8,14 @@ import com.turbo.engine.service.FlowDeploymentService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+
+/**
+ * 流程部署表 服务实现类
+ * @Description
+ * @Copyright Copyright (c) 2022
+ * @author xieyubin
+ * @since 2022-10-31 15:07:51
+ */
 @Service
 public class FlowDeploymentServiceImpl extends ServiceImpl<FlowDeploymentMapper, FlowDeployment> implements FlowDeploymentService {
     @Override

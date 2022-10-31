@@ -33,8 +33,8 @@ public class FlowInstanceServiceImpl extends ServiceImpl<FlowInstanceMapper, Flo
     @Override
     public void updateStatusById(String id, int status) {
         FlowInstance updateFlow = new FlowInstance();
-        updateFlow.setStatus(status);
-        updateFlow.setModifyTime(LocalDateTime.now());
+        updateFlow.setFlStatus(status);
+        updateFlow.setUpdatedTime(LocalDateTime.now());
         updateFlow.setId(id);
         mapper.updateById(updateFlow);
     }

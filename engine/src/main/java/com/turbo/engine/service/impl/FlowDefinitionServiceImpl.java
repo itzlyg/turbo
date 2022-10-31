@@ -12,6 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 
+/**
+ * 流程定义表 服务实现类
+ * @Description
+ * @Copyright Copyright (c) 2022
+ * @author xieyubin
+ * @since 2022-10-31 15:07:51
+ */
 @Service
 public class FlowDefinitionServiceImpl extends ServiceImpl<FlowDefinitionMapper, FlowDefinition> implements FlowDefinitionService {
 

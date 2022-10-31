@@ -8,7 +8,7 @@ public class NodeInstanceBO {
     private String sourceNodeInstanceId;
     private String sourceNodeKey;
     private String instanceDataId;
-    private int status;
+    private int flStatus;
 
     public String getId() {
         return id;
@@ -58,12 +58,11 @@ public class NodeInstanceBO {
         this.instanceDataId = instanceDataId;
     }
 
-    public int getStatus() {
-        return status;
+    public int getFlStatus() {
+        return flStatus;
     }
 
-    public void setStatus(int status) {
-        this.status = status;
+    public void setFlStatus(int flStatus) {
+        this.flStatus = flStatus;
     }
-
 }

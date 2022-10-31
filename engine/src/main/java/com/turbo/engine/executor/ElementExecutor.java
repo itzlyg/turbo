@@ -78,7 +78,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         currentNodeInstance.setNodeKey(nodeKey);
         currentNodeInstance.setSourceNodeInstanceId(sourceNodeInstanceId);
         currentNodeInstance.setSourceNodeKey(sourceNodeKey);
-        currentNodeInstance.setStatus(NodeInstanceStatus.ACTIVE);
+        currentNodeInstance.setFlStatus(NodeInstanceStatus.ACTIVE);
         currentNodeInstance.setInstanceDataId(StringUtils.defaultString(runtimeContext.getInstanceDataId(), StringUtils.EMPTY));
 
         runtimeContext.setCurrentNodeInstance(currentNodeInstance);
@@ -182,7 +182,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
 
         nodeInstanceId = currentNodeInstance.getNodeInstanceId();
         nodeKey = currentNodeInstance.getNodeKey();
-        int currentStatus = currentNodeInstance.getStatus();
+        int currentStatus = currentNodeInstance.getFlStatus();
         if (currentStatus == NodeInstanceStatus.DISABLED) {
             LOGGER.warn("preRollback: reentrant process.||flowInstanceId={}||nodeInstance={}||nodeKey={}", flowInstanceId, nodeInstanceId, nodeKey);
             throw new ReentrantException(ErrorEnum.REENTRANT_WARNING);
@@ -205,7 +205,7 @@ public abstract class ElementExecutor extends RuntimeExecutor {
      */
     protected void postRollback(RuntimeContext runtimeContext) throws ProcessException {
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
-        currentNodeInstance.setStatus(NodeInstanceStatus.DISABLED);
+        currentNodeInstance.setFlStatus(NodeInstanceStatus.DISABLED);
         runtimeContext.getNodeInstanceList().add(currentNodeInstance);
     }
 
@@ -258,12 +258,9 @@ public abstract class ElementExecutor extends RuntimeExecutor {
         }
 
         //case 3.process completed
-        if (nodeInstance.getStatus() == NodeInstanceStatus.COMPLETED) {
-            return true;
-        }
+        return nodeInstance.getFlStatus() == NodeInstanceStatus.COMPLETED;
 
         //case 4.to process
-        return false;
     }
 
     protected FlowElement getUniqueNextNode(FlowElement currentFlowElement, Map<String, FlowElement> flowElementMap) {

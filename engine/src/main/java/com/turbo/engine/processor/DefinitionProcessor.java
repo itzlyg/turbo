@@ -56,9 +56,9 @@ public class DefinitionProcessor {
             BeanUtils.copyProperties(createFlowParam, flowDefinitionPO);
             String flowModuleId = SnowFlake.genId();
             flowDefinitionPO.setFlowModuleId(flowModuleId);
-            flowDefinitionPO.setStatus(FlowDefinitionStatus.INIT);
-            flowDefinitionPO.setCreateTime(LocalDateTime.now());
-            flowDefinitionPO.setModifyTime(LocalDateTime.now());
+            flowDefinitionPO.setFlStatus(FlowDefinitionStatus.INIT);
+            flowDefinitionPO.setCreatedTime(LocalDateTime.now());
+            flowDefinitionPO.setUpdatedTime(LocalDateTime.now());
 
             boolean rows = flowDefinitionService.save(flowDefinitionPO);
             if (!rows) {
@@ -81,8 +81,8 @@ public class DefinitionProcessor {
 
             FlowDefinition flowDefinitionPO = new FlowDefinition();
             BeanUtils.copyProperties(updateFlowParam, flowDefinitionPO);
-            flowDefinitionPO.setStatus(FlowDefinitionStatus.EDITING);
-            flowDefinitionPO.setModifyTime(LocalDateTime.now());
+            flowDefinitionPO.setFlStatus(FlowDefinitionStatus.EDITING);
+            flowDefinitionPO.setUpdatedTime(LocalDateTime.now());
 
             boolean rows = flowDefinitionService.updateByModelId(flowDefinitionPO);
             if (!rows) {
@@ -107,7 +107,7 @@ public class DefinitionProcessor {
                 throw new DefinitionException(ErrorEnum.FLOW_NOT_EXIST);
             }
 
-            Integer status = flowDefinitionPO.getStatus();
+            Integer status = flowDefinitionPO.getFlStatus();
             if (status != FlowDefinitionStatus.EDITING) {
                 LOGGER.warn("deploy flow failed: flow is not editing status.||deployFlowParam={}", deployFlowParam);
                 throw new DefinitionException(ErrorEnum.FLOW_NOT_EDITING);
@@ -120,7 +120,7 @@ public class DefinitionProcessor {
             BeanUtils.copyProperties(flowDefinitionPO, flowDeploymentPO);
             String flowDeployId = SnowFlake.genId();
             flowDeploymentPO.setFlowDeployId(flowDeployId);
-            flowDeploymentPO.setStatus(FlowDeploymentStatus.DEPLOYED);
+            flowDeploymentPO.setFlStatus(FlowDeploymentStatus.DEPLOYED);
 
             boolean rows = flowDeploymentService.save(flowDeploymentPO);
             if (!rows) {
@@ -162,7 +162,7 @@ public class DefinitionProcessor {
         }
         FlowModuleResult flowModuleResult = new FlowModuleResult();
         BeanUtils.copyProperties(flowDefinitionPO, flowModuleResult);
-        Integer status = FlowModuleEnum.getStatusByDefinitionStatus(flowDefinitionPO.getStatus());
+        Integer status = FlowModuleEnum.getStatusByDefinitionStatus(flowDefinitionPO.getFlStatus());
         flowModuleResult.setStatus(status);
         LOGGER.info("getFlowModuleByFlowModuleId||flowModuleId={}||FlowModuleResult={}", flowModuleId, JsonUtil.toJson(flowModuleResult));
         return flowModuleResult;
@@ -176,7 +176,7 @@ public class DefinitionProcessor {
         }
         FlowModuleResult flowModuleResult = new FlowModuleResult();
         BeanUtils.copyProperties(flowDeploymentPO, flowModuleResult);
-        Integer status = FlowModuleEnum.getStatusByDeploymentStatus(flowDeploymentPO.getStatus());
+        Integer status = FlowModuleEnum.getStatusByDeploymentStatus(flowDeploymentPO.getFlStatus());
         flowModuleResult.setStatus(status);
         LOGGER.info("getFlowModuleByFlowDeployId||flowDeployId={}||response={}", flowDeployId, JsonUtil.toJson(flowModuleResult));
         return flowModuleResult;

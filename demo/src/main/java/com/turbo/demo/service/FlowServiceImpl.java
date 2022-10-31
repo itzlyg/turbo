@@ -1,7 +1,7 @@
 package com.turbo.demo.service;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.turbo.demo.enums.FlowModuleStatusEnum;
@@ -93,15 +93,14 @@ public class FlowServiceImpl {
      * @return 查询流程结果
      */
     public FlowModuleListResponse getFlowModuleList(GetFlowModuleListRequest getFlowModuleListRequest) {
-
         Page<FlowDefinition> page = buildGetFlowModuleListPage(getFlowModuleListRequest);
-        QueryWrapper<FlowDefinition> queryWrapper = buildGetFlowModuleListQueryWrapper(getFlowModuleListRequest);
+        LambdaQueryWrapper<FlowDefinition> queryWrapper = buildGetFlowModuleListQueryWrapper(getFlowModuleListRequest);
         IPage<FlowDefinition> pageRes = flowDefinitionService.page(page, queryWrapper);
         List<FlowModuleResponse> flowModuleList = new ArrayList<>();
         for (FlowDefinition flowDefinitionPO : pageRes.getRecords()) {
             FlowModuleResponse getFlowModuleResponse = new FlowModuleResponse();
             BeanUtils.copyProperties(flowDefinitionPO, getFlowModuleResponse);
-            QueryWrapper<FlowDeployment> flowDeployQuery = buildCountFlowDeployQueryWrapper(flowDefinitionPO.getFlowModuleId());
+            LambdaQueryWrapper<FlowDeployment> flowDeployQuery = buildCountFlowDeployQueryWrapper(flowDefinitionPO.getFlowModuleId());
             long count = flowDeploymentService.count(flowDeployQuery);
             if (count >= 1) {
                 //4 已发布
@@ -115,35 +114,27 @@ public class FlowServiceImpl {
         return flowModuleListResponse;
     }
 
-    private Page<FlowDefinition> buildGetFlowModuleListPage(GetFlowModuleListRequest getFlowModuleListRequest) {
+    private Page<FlowDefinition> buildGetFlowModuleListPage(GetFlowModuleListRequest params) {
         Page<FlowDefinition> page = new Page<>();
-        if (getFlowModuleListRequest.getSize() != null && getFlowModuleListRequest.getCurrent() != null) {
-            page.setCurrent(getFlowModuleListRequest.getCurrent());
-            page.setSize(getFlowModuleListRequest.getSize());
+        if (params.getSize() != null && params.getCurrent() != null) {
+            page.setCurrent(params.getCurrent());
+            page.setSize(params.getSize());
         }
         return page;
     }
 
-    private QueryWrapper<FlowDefinition> buildGetFlowModuleListQueryWrapper(GetFlowModuleListRequest getFlowModuleListRequest) {
-        QueryWrapper<FlowDefinition> queryWrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(getFlowModuleListRequest.getFlowModuleId())) {
-            queryWrapper.eq("flow_module_id", getFlowModuleListRequest.getFlowModuleId());
-        }
-        if (StringUtils.isNotBlank(getFlowModuleListRequest.getFlowName())) {
-            queryWrapper.like("flow_name", getFlowModuleListRequest.getFlowName());
-        }
-        if (StringUtils.isNotBlank(getFlowModuleListRequest.getFlowDeployId())) {
-            queryWrapper.eq("flow_module_id", getFlowModuleListRequest.getFlowDeployId());
-        }
-        queryWrapper.orderByDesc("modify_time");
-        return queryWrapper;
+    private LambdaQueryWrapper<FlowDefinition> buildGetFlowModuleListQueryWrapper(GetFlowModuleListRequest params) {
+        return new LambdaQueryWrapper<FlowDefinition>()
+                .eq(StringUtils.isNotBlank(params.getFlowModuleId()), FlowDefinition::getFlowModuleId, params.getFlowModuleId())
+                .like(StringUtils.isNotBlank(params.getFlowName()), FlowDefinition::getFlowName, params.getFlowName())
+                .eq(StringUtils.isNotBlank(params.getFlowDeployId()), FlowDefinition::getFlowModuleId, params.getFlowDeployId())
+                .orderByDesc(FlowDefinition::getUpdatedTime);
     }
 
-    private QueryWrapper<FlowDeployment> buildCountFlowDeployQueryWrapper(String flowModuleId) {
-        QueryWrapper<FlowDeployment> flowDeployQuery = new QueryWrapper<>();
-        flowDeployQuery.eq("flow_module_id", flowModuleId);
-        flowDeployQuery.eq("status", FlowDeploymentStatus.DEPLOYED);
-        return flowDeployQuery;
+    private LambdaQueryWrapper<FlowDeployment> buildCountFlowDeployQueryWrapper(String flowModuleId) {
+        return new LambdaQueryWrapper<FlowDeployment>()
+                .eq(StringUtils.isNotBlank(flowModuleId), FlowDeployment::getFlowModuleId, flowModuleId)
+                .eq(FlowDeployment::getFlStatus, FlowDeploymentStatus.DEPLOYED);
     }
 
 }

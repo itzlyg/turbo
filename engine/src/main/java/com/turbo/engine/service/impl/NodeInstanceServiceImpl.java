@@ -55,9 +55,9 @@ public class NodeInstanceServiceImpl extends ServiceImpl<NodeInstanceMapper, Nod
                 insertList.add(entity);
             } else {
                 NodeInstance instance = new NodeInstance();
-                instance.setModifyTime(LocalDateTime.now());
+                instance.setUpdatedTime(LocalDateTime.now());
                 instance.setId(entity.getId());
-                instance.setStatus(entity.getStatus());
+                instance.setFlStatus(entity.getFlStatus());
                 modifyList.add(instance);
             }
         });

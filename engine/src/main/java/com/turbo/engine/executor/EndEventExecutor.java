@@ -18,7 +18,7 @@ public class EndEventExecutor extends ElementExecutor {
     protected void postExecute(RuntimeContext runtimeContext) throws ProcessException {
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
         currentNodeInstance.setInstanceDataId(runtimeContext.getInstanceDataId());
-        currentNodeInstance.setStatus(NodeInstanceStatus.COMPLETED);
+        currentNodeInstance.setFlStatus(NodeInstanceStatus.COMPLETED);
         runtimeContext.getNodeInstanceList().add(currentNodeInstance);
     }
 

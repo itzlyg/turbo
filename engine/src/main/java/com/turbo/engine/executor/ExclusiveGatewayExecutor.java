@@ -137,7 +137,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
         instanceDataPO.setNodeInstanceId(runtimeContext.getCurrentNodeInstance().getNodeInstanceId());
         instanceDataPO.setNodeKey(runtimeContext.getCurrentNodeModel().getKey());
         instanceDataPO.setType(InstanceDataType.HOOK);
-        instanceDataPO.setCreateTime(LocalDateTime.now());
+        instanceDataPO.setCreatedTime(LocalDateTime.now());
         return instanceDataPO;
     }
 
@@ -145,7 +145,7 @@ public class ExclusiveGatewayExecutor extends ElementExecutor {
     protected void postExecute(RuntimeContext runtimeContext) throws ProcessException {
         NodeInstanceBO currentNodeInstance = runtimeContext.getCurrentNodeInstance();
         currentNodeInstance.setInstanceDataId(runtimeContext.getInstanceDataId());
-        currentNodeInstance.setStatus(NodeInstanceStatus.COMPLETED);
+        currentNodeInstance.setFlStatus(NodeInstanceStatus.COMPLETED);
         runtimeContext.getNodeInstanceList().add(currentNodeInstance);
     }
 
