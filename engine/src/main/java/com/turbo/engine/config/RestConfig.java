@@ -14,7 +14,7 @@ public class RestConfig {
 
     @Bean(name = "turboRestTemplate")
     public RestTemplate turboRestTemplate(){
-        Integer timeout = properties.getTimeout();
+        Integer timeout = properties.getTimeOut();
         if (timeout == null) {
             timeout = Constants.DEFAULT_TIMEOUT;
         }

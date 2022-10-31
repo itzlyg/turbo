@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "hook")
 public class HookProperties {
     private String url;
-    private Integer timeout;
+    private Integer timeOut;
 
     public String getUrl() {
         return url;
@@ -17,11 +17,11 @@ public class HookProperties {
         this.url = url;
     }
 
-    public Integer getTimeout() {
-        return timeout;
+    public Integer getTimeOut() {
+        return timeOut;
     }
 
-    public void setTimeout(Integer timeout) {
-        this.timeout = timeout;
+    public void setTimeOut(Integer timeOut) {
+        this.timeOut = timeOut;
     }
 }
