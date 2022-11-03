@@ -141,7 +141,7 @@ public class LeaveServiceImpl {
         commitTaskParam.setTaskInstanceId(rollbackTaskResult.getActiveTaskInstance().getNodeInstanceId());
         List<InstanceDataModel> variables = new ArrayList<>();
         variables.add(new InstanceDataModel("user_name", "请假人名字"));
-        variables.add(new InstanceDataModel("n", 2));
+        variables.add(new InstanceDataModel("n", 5));
         commitTaskParam.setVariables(variables);
 
         CommitTaskResult commitTaskResult = processEngine.commitTask(commitTaskParam);

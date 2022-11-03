@@ -3,6 +3,7 @@ package com.turbo.demo.controller;
 import com.turbo.demo.pojo.request.HookRequest;
 import com.turbo.demo.pojo.response.HookResponse;
 import com.turbo.demo.service.AfterSaleServiceImpl;
+import com.turbo.demo.service.LeaveServiceImpl;
 import com.turbo.engine.util.JsonUtil;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -24,11 +25,21 @@ public class RunController {
     @Resource
     private AfterSaleServiceImpl service;
 
+    @Resource
+    private LeaveServiceImpl leaveService;
+
     @GetMapping(value = "/run")
     public String run() {
         service.run();
         return String.valueOf(LocalDateTime.now());
     }
+
+    @GetMapping(value = "/leave")
+    public String leave() {
+        leaveService.run();
+        return String.valueOf(LocalDateTime.now());
+    }
+
 
     @PostMapping(value = "/hook")
     public HookResponse hookData(@RequestBody HookRequest request){
